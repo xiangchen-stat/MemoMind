@@ -4,6 +4,7 @@ import './LoginSignup.css'
 import user_icon from '../Assets/person.png'
 import email_icon from '../Assets/email.png'
 import password_icon from '../Assets/password.png'
+import logo from '../Assets/memomind.png'
 
 const LoginSignup = () => {
     const[action, setAction] = useState("Sign Up");
@@ -11,6 +12,7 @@ const LoginSignup = () => {
   return (
     <div className='container'>
       <div className="header">
+          <img src={logo} alt="" style={{ maxWidth: '250px', margin: '0 auto' }} />
         <div className="text">{action}</div>
         <div className="underline"></div>
         </div>
