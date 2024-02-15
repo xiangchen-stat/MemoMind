@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import "./LoginSignup.css";
 
 import user_icon from "../Assets/person.png";
 import email_icon from "../Assets/email.png";
 import password_icon from "../Assets/password.png";
 import logo from "../Assets/memomind.png";
+
 
 const LoginSignup = () => {
   const [action, setAction] = useState("Sign Up");
@@ -13,6 +15,8 @@ const LoginSignup = () => {
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState(""); // Added state for error message
   const [successMsg, setSuccessMsg] = useState(""); // Added state for error message
+
+  const navigate = useNavigate(); // Use useNavigate hook here
 
   const handleSignUp = async () => {
     setErrorMsg(""); // Clear error message
@@ -34,6 +38,7 @@ const LoginSignup = () => {
       const data = await response.json();
       if (response.ok) {
         setSuccessMsg("Signup successful!");
+        navigate('/notes'); // Navigate on success
       } else {
         setErrorMsg(data.msg || "Signup failed"); // Set error message
       }
@@ -58,6 +63,7 @@ const LoginSignup = () => {
       const data = await response.json();
       if (response.ok) {
         setSuccessMsg("Login successful!");
+        navigate('/notes'); // Navigate on success
       } else {
         setErrorMsg(data.msg || "Login failed"); // Set error message
       }
