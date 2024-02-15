@@ -11,12 +11,17 @@ const LoginSignup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMsg, setErrorMsg] = useState(""); // Added state for error message
+  const [successMsg, setSuccessMsg] = useState(""); // Added state for error message
 
   const handleSignUp = async () => {
+    setErrorMsg(""); // Clear error message
+    setSuccessMsg(""); // Clear error message
+
     console.log("Sending signup data:", { name, email, password });
 
     if (!name || !email || !password) {
-      alert("Please fill in all fields for sign up.");
+      setErrorMsg("Please fill in all fields for sign up."); // Set error message
       return;
     }
 
@@ -28,37 +33,37 @@ const LoginSignup = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        alert("Signup successful!");
+        setSuccessMsg("Signup successful!");
       } else {
-        alert(data.msg || "Signup failed");
+        setErrorMsg(data.msg || "Signup failed"); // Set error message
       }
     } catch (error) {
       console.error("Signup error:", error);
-      alert("Signup error");
+      setErrorMsg("Signup error"); // Set error message
     }
   };
 
   const handleLogin = async () => {
     if (!email || !password) {
-      alert("Please fill in all fields for login.");
+      setErrorMsg("Please fill in all fields for login."); // Set error message
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:3001/api/users/signup", {
+      const response = await fetch("http://localhost:3001/api/users/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
       if (response.ok) {
-        alert("Login successful!");
+        setSuccessMsg("Login successful!");
       } else {
-        alert(data.msg || "Login failed");
+        setErrorMsg(data.msg || "Login failed"); // Set error message
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("Login error");
+      setErrorMsg("Login error"); // Set error message
     }
   };
   return (
@@ -102,6 +107,12 @@ const LoginSignup = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+      </div>
+      <div className="error-message">
+        {errorMsg && <p role="alert">{errorMsg}</p>}
+      </div>
+      <div className="success-message">
+        {successMsg && <p>{successMsg}</p>} {/* Display success message */}
       </div>
       <div className="submit-container">
         {action === "Login" ? (
