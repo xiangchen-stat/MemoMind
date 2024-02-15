@@ -98,3 +98,44 @@
     background: #EAEAEA;
     color: #676767;
 }    
+
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  
+  .error-message p {
+    color: #d8000c;
+    background-color: #ffbaba;
+    border: 1px solid #d8000c;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out, fadeOut 1s ease-out 5s forwards;
+    word-wrap: break-word; /* Ensure text fits within the container */
+  }
+  
+  .success-message p {
+    color: #28a745; /* Green color for success messages */
+    background-color: #e6f9ec; /* Light green background */
+    border: 1px solid #a5d6a7; /* Slightly darker green border */
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
