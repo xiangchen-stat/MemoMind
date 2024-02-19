@@ -11,6 +11,7 @@ function App() {
       <Routes> {/* Use Routes here */}
         <Route path="/" element={<LoginSignup />} exact />
         <Route path="/notes" element={<NotesApp />} />
+        <Route path="/manage-notes" element={<NoteManager />} />
       </Routes>
     </Router>
   );
