@@ -5,6 +5,7 @@ import logo from '../Assets/memomind.png'
 function NoteManager() {
   const [notes, setNotes] = useState([]); 
 
+  // Gets the data from the database.
   useEffect(() => {
     const fetchNotes = async () => {
       try {
@@ -49,18 +50,18 @@ function NoteManager() {
 
 
   return (
-    
     <div className="custom-select-wrapper"> 
       <div className="custom-select"> 
-          {/* container for the button */}
+          {/* Container for the button. */}
           <div className="button-container">
             <button onClick={updateAllPrivacy} className="update-privacy-button">Update Privacy of All Notes</button>
           </div>
+        {/* Display for your notes. */}
         <h3>Your Notes:</h3>
         <ul>
           {notes.map((note, index) => (
              <li key={note._id} className="note-item">
-                    <h4>{note["Note Name"]}</h4>
+                    <h4>{note.NoteName}</h4>
                     <p>{note.Contents}</p>
               <select
                 value={note.privacy}
