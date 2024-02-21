@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const app = express();
-
 app.use(express.json());
 app.use(cors());
+
 
 mongoose.connect("mongodb+srv://admin:abc12345@admin.bzmamr4.mongodb.net/?retryWrites=true&w=majority")
   .then(() => console.log('Connected to MongoDB Atlas'))
@@ -16,7 +16,11 @@ app.listen(port, () => console.log(`Server listening on port ${port}`));
 
 app.use('/api/users', userRoutes);
 
-/*// Uncomment to play with a mock database. Must comment out other connections AND be connected to cluster0.32qmjxh.mongodb.net somehow to make this work. This is just a placeholder for now, will adjust when usercreation is finished. 
+/* // This is just a placeholder for now, will adjust when usercreation is finished. 
+// Uncomment to play with a mock database. 
+// Must comment out other connections to make this work. 
+// Must change CONNECTION_STRING and DATABASENAME to your own.
+
 var Mongoclient = require("mongodb").MongoClient;
 require('dotenv').config();
 
