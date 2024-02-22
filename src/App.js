@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Im
 import LoginSignup from './Components/LoginSignup/LoginSignup';
 import NotesApp from './Components/NotesApp/NotesApp';
 import NoteManager from './Components/NoteManager/NoteManager';
+import Calendar from './Components/google-calendar-integration/Calendar';
 import './App.css';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<LoginSignup />} exact />
         <Route path="/Notes" element={<NotesApp />} />
         <Route path="/manage-notes" element={<NoteManager />} />
+        <Route path="/calendar" element={<Calendar />} />
       </Routes>
     </Router>
   );

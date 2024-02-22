@@ -23,12 +23,10 @@ const LoginSignup = () => {
     setSuccessMsg(""); // Clear error message
 
     console.log("Sending signup data:", { name, email, password });
-
     if (!name || !email || !password) {
       setErrorMsg("Please fill in all fields for sign up."); // Set error message
       return;
     }
-
     try {
       const response = await fetch("http://localhost:3001/api/users/signup", {
         method: "POST",
@@ -36,15 +34,18 @@ const LoginSignup = () => {
         body: JSON.stringify({ name, email, password }),
       });
       const data = await response.json();
+
       if (response.ok) {
         setSuccessMsg("Signup successful!");
-        navigate('/notes'); // Navigate on success
+        console.log("Signup successful:");
+        navigate('/Notes'); // Navigate on success
       } else {
         setErrorMsg(data.msg || "Signup failed"); // Set error message
       }
     } catch (error) {
       console.error("Signup error:", error);
       setErrorMsg("Signup error"); // Set error message
+      console.log("Signup error:");
     }
   };
 
@@ -63,13 +64,14 @@ const LoginSignup = () => {
       const data = await response.json();
       if (response.ok) {
         setSuccessMsg("Login successful!");
-        navigate('/notes'); // Navigate on success
+        navigate('/Notes'); // Navigate on success
       } else {
         setErrorMsg(data.msg || "Login failed"); // Set error message
       }
     } catch (error) {
       console.error("Login error:", error);
       setErrorMsg("Login error"); // Set error message
+      console.log("Login error:");
     }
   };
   return (
@@ -84,7 +86,7 @@ const LoginSignup = () => {
         <div className="underline"></div>
       </div>
       <div className="inputs">
-        {action === "Login" ? null : (
+        {action !== "Login" && (
           <div className="input">
             <img src={user_icon} alt="" />
             <input
@@ -118,23 +120,20 @@ const LoginSignup = () => {
         {errorMsg && <p role="alert">{errorMsg}</p>}
       </div>
       <div className="success-message">
-        {successMsg && <p>{successMsg}</p>} {/* Display success message */}
+        {successMsg && <p>{successMsg}</p>}
       </div>
       <div className="submit-container">
-        {action === "Login" ? (
-          <div className="submit" onClick={handleLogin}>
-            Login
-          </div>
-        ) : (
-          <div className="submit" onClick={handleSignUp}>
-            Sign Up
-          </div>
-        )}
         <div
-          className={action === "Login" ? "submit gray" : "submit"}
-          onClick={() => setAction(action === "Login" ? "Sign Up" : "Login")}
+          className={action === "Login" ? "submit" : "submit gray"}
+          onClick={() => setAction("Login")}
         >
-          {action === "Login" ? "Sign Up" : "Login"}
+          Login
+        </div>
+        <div
+          className={action === "Sign Up" ? "submit" : "submit gray"}
+          onClick={action === "Sign Up" ? handleSignUp : () => setAction("Sign Up")}
+        >
+          Sign Up
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-
+/*
 mongoose.connect("mongodb+srv://admin:abc12345@admin.bzmamr4.mongodb.net/?retryWrites=true&w=majority")
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch((err) => console.error('Could not connect to MongoDB Atlas', err));
@@ -15,8 +15,8 @@ const port = process.env.PORT || 3001;
 app.listen(port, () => console.log(`Server listening on port ${port}`));
 
 app.use('/api/users', userRoutes);
-
-/* // This is just a placeholder for now, will adjust when usercreation is finished. 
+*/
+// This is just a placeholder for now, will adjust when usercreation is finished. 
 // Uncomment to play with a mock database. 
 // Must comment out other connections to make this work. 
 // Must change CONNECTION_STRING and DATABASENAME to your own.
@@ -160,4 +160,3 @@ app.put('/manage-notes/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to update note' });
   }
 });
-*/
