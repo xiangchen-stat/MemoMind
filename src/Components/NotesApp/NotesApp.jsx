@@ -131,10 +131,6 @@ const NotesApp = () => {
 
   return (
     <div className="app-container">
-      <div className="sidebar">
-        <Link to="/">Logout</Link> {/* Add more links as needed */}
-        <Link to="/Calendar">Calendar</Link>
-      </div>
       <div className="notes-section">
         {/* Selecting Note. */}
         <form 
