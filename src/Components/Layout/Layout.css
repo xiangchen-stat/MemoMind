@@ -1,0 +1,11 @@
+.nav-link {
+    color: black; /* Default link color */
+    text-decoration: none; /* Removes underline */
+    padding: 10px; /* Adds some padding around the links */
+    display: block; /* Makes each link take up its own line */
+}
+  
+.active {
+    color: blue; /* Active link color */
+    font-weight: bold; /* Makes active link bold */
+}

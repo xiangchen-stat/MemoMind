@@ -114,3 +114,30 @@ textarea, input {
 .edit-buttons button:last-child {
     background-color: lightcoral;
 }
+
+.app-container {
+    display: flex;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #f0f0f0; /* Light grey background */
+    padding: 20px;
+}
+
+.sidebar a {
+    display: block;
+    padding: 10px;
+    margin: 5px 0;
+    text-decoration: none;
+    color: #333; /* Dark text for contrast */
+}
+
+.sidebar a:hover {
+    background-color: #ddd; /* Lighter grey on hover */
+}
+
+.notes-section {
+    flex-grow: 1;
+    padding: 20px;
+}

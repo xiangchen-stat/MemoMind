@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import './NotesApp.css'; 
+import { Link } from 'react-router-dom'; // Import Link at the top
 
 const NotesApp = () => {
   // All the states of configuring Notes.
@@ -130,53 +131,55 @@ const NotesApp = () => {
 
   return (
     <div className="app-container">
-      {/* Selecting Note. */}
-      <form 
-      className="note-form" 
-      onSubmit = {(event)=>selectedNote ? handleUpdateNote(event) : handleAddNote(event)}
-      >
-        {/* Title input display. */}
-        <input
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-          placeholder="Title"
-          required
-        ></input>
-        {/* Content input display. */}
-        <textarea
-          value={content}
-          onChange={(event)=>
-            setContent(event.target.value)}
-          placeholder="Content"
-          rows={10}
-          requred
-        ></textarea>
-          {/* Conditional rendering for button for Saving and Adding notes. */}
-          {selectedNote ? (
-            <div className="edit-buttons">
-              <button type="submit">Save</button>
-              <button onClick={handleCancel}>Cancel</button>
-            </div>
-          ) : ( <button type="submit">Add Note</button>)}
-      </form>
-      {/* Displaying notes from Database. */}
-      <div className="notes-grid">
-        {notes.map((note)=> (
-          <div key={note._id} className="note-container">
-            <div 
-              className={`note-item ${selectedNote && selectedNote._id === note._id ? 'note-selected' : ''}`}
-              onClick={()=> handleNoteClick(note)}
-            >
-              {/* Header for deleting Notes. */}
-              <div className="notes-header">
-                <button onClick={(event) => deleteNote(event, note._id)}>x</button>
+      <div className="notes-section">
+        {/* Selecting Note. */}
+        <form 
+              className="note-form" 
+              onSubmit = {(event)=>selectedNote ? handleUpdateNote(event) : handleAddNote(event)}
+              >
+                {/* Title input display. */}
+                <input
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
+                  placeholder="Title"
+                  required
+                ></input>
+                {/* Content input display. */}
+                <textarea
+                  value={content}
+                  onChange={(event)=>
+                    setContent(event.target.value)}
+                  placeholder="Content"
+                  rows={10}
+                  requred
+                ></textarea>
+                  {/* Conditional rendering for button for Saving and Adding notes. */}
+                  {selectedNote ? (
+                    <div className="edit-buttons">
+                      <button type="submit">Save</button>
+                      <button onClick={handleCancel}>Cancel</button>
+                    </div>
+                  ) : ( <button type="submit">Add Note</button>)}
+              </form>
+              {/* Displaying notes from Database. */}
+              <div className="notes-grid">
+                {notes.map((note)=> (
+                  <div key={note._id} className="note-container">
+                    <div 
+                      className={`note-item ${selectedNote && selectedNote._id === note._id ? 'note-selected' : ''}`}
+                      onClick={()=> handleNoteClick(note)}
+                    >
+                      {/* Header for deleting Notes. */}
+                      <div className="notes-header">
+                        <button onClick={(event) => deleteNote(event, note._id)}>x</button>
+                      </div>
+                      {/* Actual display of notes. */}
+                      <h2>{note.NoteName}</h2>
+                      <p>{note.Contents}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              {/* Actual display of notes. */}
-              <h2>{note.NoteName}</h2>
-              <p>{note.Contents}</p>
-            </div>
-          </div>
-        ))}
       </div>
     </div>
   )
