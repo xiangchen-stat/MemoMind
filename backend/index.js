@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
 const app = express();
+const session = require('express-session');
 app.use(express.json());
 app.use(cors());
 
@@ -40,13 +41,73 @@ Mongoclient.connect(CONNECTION_STRING).then(client => {
   console.error("Connection error to MongoDB:", error);
 });
 
+// login signup page -------------------------------------
+
+// Configure session middleware
+app.use(session({
+  secret: 'your_secret_key', // Random key for signing the session ID cookie
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
+
+// Compare the provided password with the one stored in the database.
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await database.collection('Users').findOne({ email: email });
+    if (user) {
+      if (user.password === password) {
+        req.session.userEmail = user.email;
+        res.status(200).json({ message: "Login successful", user: { name: user.name, email: user.email }});//, token }); 
+
+      } else {
+        res.status(401).json({ message: "Invalid credentials" });
+      }
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (err) {
+    console.error("Login error:", err);
+    res.status(500).json({ error: "An error occurred during login" });
+  }
+});
+
+// Put the signup data into the database.
+app.post('/api/signup', async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    const existingUser = await database.collection('Users').findOne({ email: email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User with this email already exists" });
+    }
+
+    // Maybe hash the password before storing it?
+    const result = await database.collection('Users').insertOne({ name, email, password });
+
+    if (result.acknowledged) {
+      const savedUser = await database.collection('Users').findOne({ email: email });
+      res.status(201).json({ name: savedUser.name, email: savedUser.email }); 
+      
+    } else {
+      res.status(400).json({ message: 'Failed to add user' });
+    }
+  } catch (error) {
+    console.error('Error adding user:', error);
+    res.status(500).json({ error: 'Failed to add user' });
+  }
+});
+
 // main page ---------------------------------------------
 
-// Gets data from notes main page
+// Gets data from notes main page.
 app.get("/Notes", async (req, res) => {
+  const userEmail = req.query.userEmail;
   try {
   const notesCollection = database.collection("Notes");
-  const notes = await notesCollection.find({}).toArray();
+  const notes = await notesCollection.find({ userEmail }).toArray();
   res.status(200).json(notes);
   } catch (err) {
     console.error("Failed to fetch notes:", err);
@@ -54,14 +115,15 @@ app.get("/Notes", async (req, res) => {
   }
 })
 
+// Allows you to insert notes to the database.
 app.post('/Notes', async (req, res) => {
-  //const noteId = req.params.id;
-  const { NoteName, Contents } = req.body;
+  const { NoteName, Contents, userEmail } = req.body; 
 
   try {
     const result = await database.collection('Notes').insertOne({
-      NoteName: NoteName,
-      Contents: Contents
+      userEmail,
+      NoteName,//: NoteName,
+      Contents//: Contents
     });
 
     if (result.acknowledged) {
@@ -76,13 +138,14 @@ app.post('/Notes', async (req, res) => {
   }
 });
 
+// Allows you to update the notes in the database. 
 app.put('/Notes/:id', async (req, res) => {
   const noteId = req.params.id;
   const { NoteName, Contents } = req.body;
 
   try {
     const result = await database.collection('Notes').updateOne(
-      { _id: new mongodb.ObjectId(noteId) },
+      { _id: new mongodb.ObjectId(noteId),  },
       {         
         $set: {
           NoteName: NoteName,
@@ -103,15 +166,16 @@ app.put('/Notes/:id', async (req, res) => {
   }
 });
 
-
+// Allows you to delete notes from the database.
 app.delete('/Notes/:id', async (req, res) => {
   const noteId = req.params.id;
-  //const { id, NoteName, Contents } = req.body;
+  const userEmail = req.query.userEmail;
 
   try {
-    const result = await database.collection('Notes').deleteOne(
-      { _id: new mongodb.ObjectId(noteId) },
-    );
+    const result = await database.collection('Notes').deleteOne({ 
+        _id: new mongodb.ObjectId(noteId), 
+        userEmail: userEmail 
+      },);
 
     if (result.modifiedCount === 1) {
       res.json({ message: 'Note deleted successfully' });
@@ -129,9 +193,10 @@ app.delete('/Notes/:id', async (req, res) => {
 
 // Gets data from the manage-notes page.
 app.get("/manage-notes", async (req, res) => {
+
   try {
     const notesCollection = database.collection("Notes");
-    const notes = await notesCollection.find({}).toArray();
+    const notes = await notesCollection.find({ userEmail: req.userEmail }).toArray();
     res.status(200).json(notes);
   } catch (err) {
     console.error("Failed to fetch notes:", err);
