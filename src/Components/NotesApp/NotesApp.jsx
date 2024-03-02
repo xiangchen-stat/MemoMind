@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import './NotesApp.css'; 
-import { Link } from 'react-router-dom'; // Import Link at the top
+import { NavLink } from 'react-router-dom'; // Import Link at the top
 
 const NotesApp = () => {
   // All the states of configuring Notes.
@@ -9,16 +9,18 @@ const NotesApp = () => {
   const [ title, setTitle ] = useState('');
   const [ content, setContent ] = useState('');
   const [ selectedNote, setSelectedNote ] = useState(null);
+  const userEmail = localStorage.getItem('userEmail');
 
   // Function to display notes.
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await fetch('http://localhost:3001/Notes');
+        const response = await fetch(`http://localhost:3001/Notes?userEmail=${userEmail}`);
         const data = await response.json();
         setNotes(data);
       } catch (error) {
         console.error('Error fetching notes:', error);
+        setNotes([]); 
       }
     };
 
@@ -43,12 +45,12 @@ const NotesApp = () => {
     event.preventDefault();
 
     const newNote = {
-      //id: Date.now(),
+      userEmail,
       NoteName: title,
       Contents: content
     };
     try {
-      const response = await fetch('http://localhost:3001/Notes', {
+      const response = await fetch(`http://localhost:3001/Notes?userEmail=${userEmail}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,7 +63,7 @@ const NotesApp = () => {
       }
       
       const savedNote = await response.json();
-      setNotes([...notes, savedNote]); 
+      setNotes([...notes, savedNote]);
       setTitle('');
       setContent('');
     } catch (error) {
@@ -77,13 +79,12 @@ const NotesApp = () => {
     }
 
     const updatedNote = {
-      //id: selectedNote.id,
       NoteName: title,
       Contents: content,
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/Notes/${selectedNote._id}`, {
+      const response = await fetch(`http://localhost:3001/Notes/${selectedNote._id}?userEmail=${userEmail}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -94,7 +95,7 @@ const NotesApp = () => {
       const savedNote = await response.json();
 
       const updatedNotesList = notes.map((note) =>
-        note._id === selectedNote._id ? savedNote : note // Assuming your backend returns the updated note
+        note._id === selectedNote._id ? savedNote : note 
       );
       setNotes(updatedNotesList);
       setTitle('');
@@ -117,7 +118,7 @@ const NotesApp = () => {
     event.stopPropagation();
 
     try {
-      await fetch(`http://localhost:3001/Notes/${noteId}`, {
+      await fetch(`http://localhost:3001/Notes/${noteId}?userEmail=${userEmail}`, {
         method: 'DELETE',
       });
   
@@ -151,7 +152,7 @@ const NotesApp = () => {
                     setContent(event.target.value)}
                   placeholder="Content"
                   rows={10}
-                  requred
+                  required
                 ></textarea>
                   {/* Conditional rendering for button for Saving and Adding notes. */}
                   {selectedNote ? (
@@ -163,7 +164,7 @@ const NotesApp = () => {
               </form>
               {/* Displaying notes from Database. */}
               <div className="notes-grid">
-                {notes.map((note)=> (
+                {Array.isArray(notes) && notes.map((note)=> (
                   <div key={note._id} className="note-container">
                     <div 
                       className={`note-item ${selectedNote && selectedNote._id === note._id ? 'note-selected' : ''}`}
@@ -173,8 +174,10 @@ const NotesApp = () => {
                       <div className="notes-header">
                         <button onClick={(event) => deleteNote(event, note._id)}>x</button>
                       </div>
+                      <NavLink to={`/notes/${note._id}`} activeClassName="active-note"></NavLink>
                       {/* Actual display of notes. */}
                       <h2>{note.NoteName}</h2>
+                      
                       <p>{note.Contents}</p>
                     </div>
                   </div>
