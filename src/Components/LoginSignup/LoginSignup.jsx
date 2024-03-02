@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import "./LoginSignup.css";
-
+//import { useAuth } from '../../AuthContext.js';
 import user_icon from "../Assets/person.png";
 import email_icon from "../Assets/email.png";
 import password_icon from "../Assets/password.png";
 import logo from "../Assets/memomind.png";
 
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess, logoutSuccess } from '../../LoginStore/authSlice';
 
 const LoginSignup = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate(); // Use useNavigate hook here
+
   const [action, setAction] = useState("Sign Up");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -16,8 +21,7 @@ const LoginSignup = () => {
   const [errorMsg, setErrorMsg] = useState(""); // Added state for error message
   const [successMsg, setSuccessMsg] = useState(""); // Added state for error message
 
-  const navigate = useNavigate(); // Use useNavigate hook here
-
+  // Function that handles signup.
   const handleSignUp = async () => {
     setErrorMsg(""); // Clear error message
     setSuccessMsg(""); // Clear error message
@@ -28,7 +32,7 @@ const LoginSignup = () => {
       return;
     }
     try {
-      const response = await fetch("http://localhost:3001/api/users/signup", {
+      const response = await fetch("http://localhost:3001/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
@@ -37,7 +41,6 @@ const LoginSignup = () => {
 
       if (response.ok) {
         setSuccessMsg("Signup successful!");
-        console.log("Signup successful:");
         navigate('/Notes'); // Navigate on success
       } else {
         setErrorMsg(data.msg || "Signup failed"); // Set error message
@@ -49,6 +52,7 @@ const LoginSignup = () => {
     }
   };
 
+  // Function that handles login.
   const handleLogin = async () => {
     if (!email || !password) {
       setErrorMsg("Please fill in all fields for login."); // Set error message
@@ -56,15 +60,20 @@ const LoginSignup = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/api/users/login", {
+      const response = await fetch("http://localhost:3001/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
       if (response.ok) {
+        // Store user data & token in local storage.
+        localStorage.setItem('userData', JSON.stringify(data)); 
+        localStorage.setItem('userEmail', data.user.email);
+        dispatch(loginSuccess(data))
         setSuccessMsg("Login successful!");
-        navigate('/Notes'); // Navigate on success
+        // Navigate to main page on success.
+        navigate('/Notes'); 
       } else {
         setErrorMsg(data.msg || "Login failed"); // Set error message
       }
@@ -77,11 +86,7 @@ const LoginSignup = () => {
   return (
     <div className="container">
       <div className="header">
-        <img
-          src={logo}
-          alt=""
-          style={{ maxWidth: "250px", margin: "0 auto" }}
-        />
+        <img src={logo} alt="" style={{ maxWidth: "250px", margin: "0 auto" }}/>
         <div className="text">{action}</div>
         <div className="underline"></div>
       </div>
@@ -125,7 +130,7 @@ const LoginSignup = () => {
       <div className="submit-container">
         <div
           className={action === "Login" ? "submit" : "submit gray"}
-          onClick={() => setAction("Login")}
+          onClick={action === "Login" ? handleLogin : () => setAction("Login")}
         >
           Login
         </div>
