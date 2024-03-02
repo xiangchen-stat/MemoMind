@@ -6,15 +6,25 @@ import NoteManager from './Components/NoteManager/NoteManager';
 import Calendar from './Components/Calendar/Calendar';
 import './App.css';
 import Layout from './Components/Layout/Layout';
+import ProtectedRoute from './LoginStore/ProtectedRoute.js'; 
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<LoginSignup />} />
-        <Route path="/notes" element={<Layout><NotesApp /></Layout>} />
-        <Route path="/manage-notes" element={<Layout><NoteManager /></Layout>} />
-        <Route path="/calendar" element={<Layout><Calendar /></Layout>} />
+        <Route path="/Notes" element={
+          <ProtectedRoute>
+            <Layout><NotesApp /></Layout>
+          </ProtectedRoute>} />
+        <Route path="/manage-notes" element={
+          <ProtectedRoute>
+            <Layout><NoteManager /></Layout>
+          </ProtectedRoute>} />
+        <Route path="/calendar" element={
+          <ProtectedRoute>
+            <Layout><Calendar /></Layout>
+          </ProtectedRoute>} />
       </Routes>
     </Router>
   );
