@@ -1,10 +1,34 @@
+/* Updated CSS with container styles */
+.nav-link-container {
+    text-align: left;
+    display: block; /* Makes each link take up its own line */
+    padding: 10px; /* Adds some padding around the links */
+}
+
+.nav-link-container:hover {
+    background-color: lightgray; /* Changes background color on hover */
+}
+
 .nav-link {
+    text-align: left;
     color: black; /* Default link color */
     text-decoration: none; /* Removes underline */
-    padding: 10px; /* Adds some padding around the links */
-    display: block; /* Makes each link take up its own line */
+    display: block; /* Ensures the link/button fills the container */
+    padding: 0; /* Removes padding from the link/button, use container's padding instead */
+    background-color: transparent; /* Ensures the button background is transparent */
+    border: none; /* Removes button border */
+    cursor: pointer; /* Ensures the cursor changes to a pointer to indicate clickability */
+    width: 100%; /* Ensures the button expands to fill its container */
 }
-  
+
+.logout-button {
+    background-color: transparent; /* Ensures the button background is transparent */
+    border: none; /* Removes button border */
+    cursor: pointer; /* Changes cursor to pointer to indicate clickability */
+    width: 100%; /* Ensures the button expands to fill its container */
+    font-size: 15px; /* Increases font size */
+}
+
 .active {
     color: blue; /* Active link color */
     font-weight: bold; /* Makes active link bold */
