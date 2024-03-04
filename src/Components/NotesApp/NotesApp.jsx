@@ -1,17 +1,18 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import './NotesApp.css'; 
-import { NavLink } from 'react-router-dom'; // Import Link at the top
+import React, { useState, useEffect } from 'react';
+import './NotesApp.css';
+import { NavLink } from 'react-router-dom';
 
 const NotesApp = () => {
-  // All the states of configuring Notes.
-  const [ notes, setNotes ] = useState([]);
-  const [ title, setTitle ] = useState('');
-  const [ content, setContent ] = useState('');
-  const [ selectedNote, setSelectedNote ] = useState(null);
+  // State declarations
+  const [notes, setNotes] = useState([]);
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [selectedNote, setSelectedNote] = useState(null);
+  const [labels, setLabels] = useState([]); // All available labels
+  const [selectedLabels, setSelectedLabels] = useState([]); // Labels for the current note
+  const [newLabel, setNewLabel] = useState(''); // State for managing new label input
   const userEmail = localStorage.getItem('userEmail');
 
-  // Function to display notes.
   useEffect(() => {
     const fetchNotes = async () => {
       try {
@@ -20,13 +21,28 @@ const NotesApp = () => {
         setNotes(data);
       } catch (error) {
         console.error('Error fetching notes:', error);
-        setNotes([]); 
+        setNotes([]);
       }
     };
 
     fetchNotes();
   }, []);
 
+  const handleCreateLabel = () => {
+    if (newLabel && !labels.includes(newLabel)) {
+      setLabels([...labels, newLabel]);
+      setNewLabel(''); // Clear input field after adding
+    }
+  };
+
+  const handleLabelCheckChange = (e, label) => {
+    if (e.target.checked) {
+      setSelectedLabels([...selectedLabels, label]);
+    } else {
+      setSelectedLabels(selectedLabels.filter((l) => l !== label));
+    }
+  };
+    
   // Function to click notes.
   const handleNoteClick = (note) => {
   if (selectedNote && selectedNote._id === note._id) {
@@ -47,9 +63,10 @@ const NotesApp = () => {
     const newNote = {
       userEmail,
       NoteName: title,
-      Contents: content
+      Contents: content,
+      Labels: selectedLabels,
     };
-    try {
+    try { /* add labels to backend later ?*/
       const response = await fetch(`http://localhost:3001/Notes?userEmail=${userEmail}`, {
         method: 'POST',
         headers: {
@@ -81,6 +98,8 @@ const NotesApp = () => {
     const updatedNote = {
       NoteName: title,
       Contents: content,
+      Labels: selectedLabels, // Include selected labels here
+
     }
 
     try {
@@ -133,35 +152,28 @@ const NotesApp = () => {
   return (
     <div className="app-container">
       <div className="notes-section">
-        {/* Selecting Note. */}
-        <form 
-              className="note-form" 
-              onSubmit = {(event)=>selectedNote ? handleUpdateNote(event) : handleAddNote(event)}
-              >
-                {/* Title input display. */}
-                <input
-                  value={title}
-                  onChange={(event) => setTitle(event.target.value)}
-                  placeholder="Title"
-                  required
-                ></input>
-                {/* Content input display. */}
-                <textarea
-                  value={content}
-                  onChange={(event)=>
-                    setContent(event.target.value)}
-                  placeholder="Content"
-                  rows={10}
-                  required
-                ></textarea>
-                  {/* Conditional rendering for button for Saving and Adding notes. */}
-                  {selectedNote ? (
-                    <div className="edit-buttons">
-                      <button type="submit">Save</button>
-                      <button onClick={handleCancel}>Cancel</button>
-                    </div>
-                  ) : ( <button type="submit">Add Note</button>)}
-              </form>
+        <form className="note-form" onSubmit={(event) => selectedNote ? handleUpdateNote(event) : handleAddNote(event)}>
+        <input
+          value={title}
+          onChange={(event) => setTitle(event.target.value)}
+          placeholder="Title"
+          required
+        ></input>
+        <textarea
+          value={content}
+          onChange={(event) => setContent(event.target.value)}
+          placeholder="Content"
+          rows={10}
+          required
+        ></textarea>
+
+          {selectedNote ? (
+            <div className="edit-buttons">
+              <button type="submit">Save</button>
+              <button onClick={handleCancel}>Cancel</button>
+            </div>
+          ) : ( <button type="submit">Add Note</button>)}
+        </form>
               {/* Displaying notes from Database. */}
               <div className="notes-grid">
                 {Array.isArray(notes) && notes.map((note)=> (
@@ -184,6 +196,29 @@ const NotesApp = () => {
                 ))}
               </div>
       </div>
+      <div className="labels-sidebar">
+        <h3>Labels</h3>
+        <input
+            type="text"
+            placeholder="Create new label"
+            value={newLabel}
+            onChange={(e) => setNewLabel(e.target.value)}
+          />
+          <button type="button" onClick={handleCreateLabel}>Add Label</button>
+          {/* Checkboxes for labels */}
+          {labels.map((label, index) => (
+            <div key={index}>
+              <input
+                type="checkbox"
+                id={`label-${index}`}
+                value={label}
+                onChange={(e) => handleLabelCheckChange(e, label)}
+                checked={selectedLabels.includes(label)}
+              />
+              <label htmlFor={`label-${index}`}>{label}</label>
+            </div>
+          ))}
+        </div>
     </div>
   )
 }

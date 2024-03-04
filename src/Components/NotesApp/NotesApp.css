@@ -5,7 +5,9 @@ body {
 }
 
 .app-container {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: row; /* Ensure the main container is row-aligned */
+    justify-content: space-between; /* Space between main content and labels */
 }
 
 @media (min-width: 600px) {
@@ -30,14 +32,14 @@ body {
 .notes-grid {
     display: grid;
     gap: var(--grid-gap);
-    grid-template-columns: repeat(auto-fill, minmax(var(--note-width), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* More flexible column sizing */
 }
 
 .note-container {
-    width: var(--note-width);
-    height: var(--note-height);
-    overflow: hidden;
-    overflow-y: auto;
+    width: auto; /* Adjust based on parent container */
+    max-width: 100%; /* Ensure it doesn't overflow its container */
+    height: auto; /* Height based on content */
+    min-height: var(--note-height); /* Minimum height */
 }
 
 .note-item {
@@ -138,6 +140,22 @@ textarea, input {
 }
 
 .notes-section {
-    flex-grow: 1;
+    flex-grow: 3;
     padding: 20px;
+}
+
+.multi-select {
+    width: 100%;
+    height: auto;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+  }
+  
+  .labels-sidebar {
+    flex: 6; /* Take less space than the notes section */
+    background-color: #f0f0f0; /* Light grey background */
+    padding: 20px;
+    height: auto; /* Adjust height based on content */
 }
