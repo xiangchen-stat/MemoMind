@@ -22,7 +22,11 @@ function Calendar() {
         throw new Error('Failed to fetch events');
       }
       const data = await response.json();
-      setEvents(data);
+      const formattedEvents = data.map(event => ({
+        ...event,
+        id: event._id, // Ensure this transformation so FullCalendar knows each event's DB _id
+      }));
+      setEvents(formattedEvents);
       console.log('Server response:', data);
 
     } catch (error) {
@@ -66,13 +70,45 @@ function Calendar() {
       console.error("Error adding event:", error);
     }
   };
+
+  const handleEventRemove = async (event) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/events/${event.id}?userEmail=${userEmail}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete event');
+      }
+  
+      // Refresh the events from the server or directly update local state
+      fetchEvents();
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
+  };
+  
+
+  const renderEventContent = (eventInfo) => {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <button
+          onClick={() => handleEventRemove(eventInfo.event)}
+          style={{ cursor: 'pointer', border: 'none', background: 'none', color: 'red', marginRight: '5px' }}>
+          x
+        </button>
+        <span>{eventInfo.event.title}</span>
+      </div>
+    );
+  };
+    
   
   return (
     <div>
       <input type="text" placeholder="Event Title" value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} />
       <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} />
       <button onClick={handleAddEvent}>Add Event</button>
-      <FullCalendar // Corrected capitalization
+      <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         headerToolbar={{
@@ -82,6 +118,10 @@ function Calendar() {
         }}
         events={events} // Make sure to pass the updated events array to FullCalendar
         height="90vh"
+        // adjust the width of the FullCalendar
+        eventContent={renderEventContent}
+        eventBackgroundColor="rgb(191, 148, 228)"
+        eventBorderColor="transparent"
       />
     </div>
   );
