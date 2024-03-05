@@ -186,30 +186,33 @@ const NotesApp = () => {
             </div>
           ) : ( <button type="submit">Add Note</button>)}
         </form>
-              {/* Displaying notes from Database. */}
-              <div className="notes-grid">
-                {Array.isArray(notes) && notes.map((note) => (
-                  <div key={note._id} className="note-container">
-                    <div 
-                      className={`note-item ${selectedNote && selectedNote._id === note._id ? 'note-selected' : ''}`}
-                      onClick={() => handleNoteClick(note)}
-                    >
-                      {/* Header for deleting Notes. */}
-                      <div className="notes-header">
-                        <button onClick={(event) => deleteNote(event, note._id)}>x</button>
-                      </div>
-                      {/* Render labels here */}
-                      <div className="note-labels">
-                        {note.Labels && note.Labels.map((label, index) => (
-                          <span key={index} className="note-label">{label}</span>
-                        ))}
-                      </div>
-                      <h2>{note.NoteName}</h2>
-                      <p>{note.Contents}</p>
-                    </div>
-                  </div>
-                ))}
+        <div className="notes-grid">
+        {notes.map((note) => (
+          <div key={note._id} className="note-container">
+            <div 
+              className={`note-item ${selectedNote && selectedNote._id === note._id ? 'note-selected' : ''}`}
+              onClick={() => handleNoteClick(note)}
+            >
+              <div className="notes-header">
+                <button onClick={(event) => deleteNote(event, note._id)}>x</button>
               </div>
+              <h2>{note.NoteName}</h2>
+              <p>{note.Contents}</p>
+              {/* Labels Section */}
+              <div className="note-labels-container">
+                {note.Labels && note.Labels.length > 0 ? (
+                  note.Labels.map((label, index) => (
+                    <span key={index} className="note-label">{label}</span>
+                  ))
+                ) : (
+                  <p>No labels</p>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
       </div>
       <div className="labels-sidebar">
         <h3>Labels</h3>
