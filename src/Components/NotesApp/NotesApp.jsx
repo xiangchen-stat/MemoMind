@@ -1,4 +1,4 @@
-import React from 'react';
+// import React from 'react';
 import { useState, useEffect } from 'react';
 import './NotesApp.css'; 
 import { NavLink } from 'react-router-dom'; // Import Link at the top
@@ -150,7 +150,7 @@ const NotesApp = () => {
                   value={content}
                   onChange={(event)=>
                     setContent(event.target.value)}
-                  placeholder="Content"
+                  placeholder="test"
                   rows={10}
                   required
                 ></textarea>
