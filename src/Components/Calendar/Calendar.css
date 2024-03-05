@@ -7,25 +7,6 @@
     color: black;
     max-width:1000px;
   }
-  .custom-calendar {
+.custom-calendar {
     width: 100%; /* Ensures the calendar fills its container */
 }
-
-  
-  .calendar-container input, .calendar-container button {
-    margin: 10px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .calendar-container button {
-    background-color: #88a3d5; /* Green */
-    color: white;
-    cursor: pointer;
-  }
-  
-  .calendar-container button:hover {
-    background-color: #45a049;
-  }
-  

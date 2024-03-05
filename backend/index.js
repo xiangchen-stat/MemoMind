@@ -135,6 +135,29 @@ app.get("/api/events", async (req, res) => {
   }
 });
 
+app.delete('/api/events/:id', async (req, res) => {
+  const { id } = req.params;
+  // Optional: You might also want to verify userEmail for ownership before deletion
+  const { userEmail } = req.query;
+
+  try {
+    const result = await database.collection('Events').deleteOne({
+      _id: new mongodb.ObjectId(id), // Convert string ID to MongoDB ObjectId
+      userEmail, // Optionally use this to ensure the user owns the event
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Event not found' });
+    }
+
+    res.status(200).json({ message: 'Event deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    res.status(500).json({ error: 'Failed to delete event' });
+  }
+});
+
+
 // main page ---------------------------------------------
 
 // Gets data from notes main page.
