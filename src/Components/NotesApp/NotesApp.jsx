@@ -20,6 +20,7 @@ const NotesApp = () => {
         const response = await fetch(`http://localhost:3001/Notes?userEmail=${userEmail}`);
         const data = await response.json();
         setNotes(data);
+        console.log(data);
         // fetch labels from notes
         const allLabels = data.reduce((acc, note) => {
           return [...acc, ...note.Labels];
@@ -229,7 +230,9 @@ const NotesApp = () => {
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
           />
-          <button type="button" onClick={handleCreateLabel}>Add Label</button>
+          <div className="create-label-button">
+            <button type="button" onClick={handleCreateLabel}>Add Label</button>
+          </div>
           {/* Checkboxes for labels */}
           {labels.map((label, index) => (
             <div key={index}>
