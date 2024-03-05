@@ -19,6 +19,11 @@ const NotesApp = () => {
         const response = await fetch(`http://localhost:3001/Notes?userEmail=${userEmail}`);
         const data = await response.json();
         setNotes(data);
+        // fetch labels from notes
+        const allLabels = data.reduce((acc, note) => {
+          return [...acc, ...note.Labels];
+        }, []);
+        setLabels([...new Set(allLabels)]);
       } catch (error) {
         console.error('Error fetching notes:', error);
         setNotes([]);
@@ -52,17 +57,18 @@ const NotesApp = () => {
     setSelectedNote(null);
     setTitle('');
     setContent(''); 
+    setSelectedLabels([]);
   } else {
     setSelectedNote(note);
     setTitle(note.NoteName);
     setContent(note.Contents);
+    setSelectedLabels(note.Labels || []);
   }
   }
   
   // Function to add notes.
   const handleAddNote = async (event) => {
     event.preventDefault();
-
     const newNote = {
       userEmail,
       NoteName: title,
@@ -83,6 +89,8 @@ const NotesApp = () => {
       }
       
       const savedNote = await response.json();
+
+      console.log(savedNote);
       setNotes([...notes, savedNote]);
       setTitle('');
       setContent('');
@@ -102,7 +110,6 @@ const NotesApp = () => {
       NoteName: title,
       Contents: content,
       Labels: selectedLabels, // Include selected labels here
-
     }
 
     try {
@@ -138,7 +145,6 @@ const NotesApp = () => {
   // Function to delete a note.
   const deleteNote = async (event, noteId) => {
     event.stopPropagation();
-
     try {
       await fetch(`http://localhost:3001/Notes/${noteId}?userEmail=${userEmail}`, {
         method: 'DELETE',
@@ -187,31 +193,31 @@ const NotesApp = () => {
           ) : ( <button type="submit">Add Note</button>)}
         </form>
         <div className="notes-grid">
-        {notes.map((note) => (
-          <div key={note._id} className="note-container">
-            <div 
-              className={`note-item ${selectedNote && selectedNote._id === note._id ? 'note-selected' : ''}`}
-              onClick={() => handleNoteClick(note)}
-            >
-              <div className="notes-header">
-                <button onClick={(event) => deleteNote(event, note._id)}>x</button>
-              </div>
-              <h2>{note.NoteName}</h2>
-              <p>{note.Contents}</p>
-              {/* Labels Section */}
-              <div className="note-labels-container">
-                {note.Labels && note.Labels.length > 0 ? (
-                  note.Labels.map((label, index) => (
-                    <span key={index} className="note-label">{label}</span>
-                  ))
-                ) : (
-                  <p>No labels</p>
-                )}
-              </div>
+      {notes.map((note) => (
+        <div key={note._id} className="note-container">
+          <div 
+            className={`note-item ${selectedNote && selectedNote._id === note._id ? 'note-selected' : ''}`}
+            onClick={() => handleNoteClick(note)}
+          >
+            <div className="notes-header">
+              <button onClick={(event) => deleteNote(event, note._id)}>x</button>
+            </div>
+            <h2>{note.NoteName}</h2>
+            <p>{note.Contents}</p>
+            {/* Labels Section */}
+            <div className="note-labels-container">
+              {note.Labels && note.Labels.length > 0 ? (
+                note.Labels.map((label, index) => (
+                  <span key={index} className="note-label">{label}</span>
+                ))
+              ) : (
+                <p>No labels</p>
+              )}
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
+    </div>
 
       </div>
       <div className="labels-sidebar">

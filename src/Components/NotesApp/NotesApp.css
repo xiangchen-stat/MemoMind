@@ -137,5 +137,7 @@ textarea, input {
     padding: 2px 8px;
     border-radius: 4px;
     font-size: 12px;
+    /* make gaps between labels */
+    margin-right: 5px;
   }
   

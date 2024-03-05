@@ -117,18 +117,20 @@ app.get("/Notes", async (req, res) => {
 
 // Allows you to insert notes to the database.
 app.post('/Notes', async (req, res) => {
-  const { NoteName, Contents, userEmail } = req.body; 
+  const { NoteName, Contents, userEmail, Labels} = req.body; 
 
   try {
     const result = await database.collection('Notes').insertOne({
       userEmail,
       NoteName,//: NoteName,
-      Contents//: Contents
+      Contents,//: Contents
+      Labels,
     });
 
     if (result.acknowledged) {
       const savedNote = await database.collection('Notes').findOne({ _id: result.insertedId });
       res.status(201).json(savedNote); // return the newly created note
+      
     } else {
       res.status(400).json({ message: 'Failed to add note' });
     }
@@ -141,7 +143,7 @@ app.post('/Notes', async (req, res) => {
 // Allows you to update the notes in the database. 
 app.put('/Notes/:id', async (req, res) => {
   const noteId = req.params.id;
-  const { NoteName, Contents } = req.body;
+  const { NoteName, Contents, Labels } = req.body;
 
   try {
     const result = await database.collection('Notes').updateOne(
@@ -150,6 +152,7 @@ app.put('/Notes/:id', async (req, res) => {
         $set: {
           NoteName: NoteName,
           Contents: Contents,
+          Labels,
         } 
       }
     );
