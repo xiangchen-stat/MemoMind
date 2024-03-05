@@ -1,10 +1,10 @@
-// In Calendar.jsx
-import React, { useState } from 'react';
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import './Calendar.css';
+import React, { useState } from "react";
+import FullCalendar from "@fullcalendar/react"; // Corrected capitalization
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import interactionPlugin from "@fullcalendar/interaction";
 
-export default function Calendar() {
+function Calendar() {
   const [events, setEvents] = useState([]);
   const [eventTitle, setEventTitle] = useState('');
   const [eventDate, setEventDate] = useState('');
@@ -12,25 +12,36 @@ export default function Calendar() {
   const handleAddEvent = () => {
     const newEvent = {
       title: eventTitle,
-      date: eventDate,
+      start: eventDate, // Changed 'date' to 'start'
+      color: 'purple',
     };
-    setEvents([...events, newEvent]);
+    const updatedEvents = [...events, newEvent];
+    console.log('Adding event:', newEvent);
+    console.log('Updated events array:', updatedEvents);
+  
+    setEvents(updatedEvents);
     setEventTitle('');
     setEventDate('');
   };
 
   return (
-    <div className="calendar-container">
+    <div>
       <input type="text" placeholder="Event Title" value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} />
       <input type="date" value={eventDate} onChange={(e) => setEventDate(e.target.value)} />
       <button onClick={handleAddEvent}>Add Event</button>
-      <FullCalendar
-        plugins={[dayGridPlugin]}
+      <FullCalendar // Corrected capitalization
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
-        weekends={false}
-        events={events}
-        height={650}
+        headerToolbar={{
+          start: "today prev,next",
+          center: "title",
+          end: "dayGridMonth,timeGridWeek,timeGridDay",
+        }}
+        events={events} // Make sure to pass the updated events array to FullCalendar
+        height="90vh"
       />
     </div>
   );
 }
+
+export default Calendar;

@@ -229,7 +229,9 @@ const NotesApp = () => {
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
           />
-          <button type="button" onClick={handleCreateLabel}>Add Label</button>
+          <div className="create-label-button">
+            <button type="button" onClick={handleCreateLabel}>Add Label</button>
+          </div>
           {/* Checkboxes for labels */}
           {labels.map((label, index) => (
             <div key={index}>

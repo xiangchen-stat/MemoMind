@@ -6,14 +6,15 @@ body {
 .sidebar {
     width: 250px;
     background-color: #f0f0f0; /* Light grey background */
-    padding: 20px;
+    padding: var(--sidebar-padding);
 
     position: fixed;
     left: 20px;
     top: 20px;
     bottom: 20px;
     overflow-y: auto;
-    width: 200px;
+    width: var(--sidebar-width);
+    left: 20px;
 }
 
 .sidebar a {
@@ -30,9 +31,10 @@ body {
 
 .app-container {
     display: grid;
-    grid-template-columns: 4fr 1fr; /* More space for the notes section */
-    gap: 20px;
-    padding: 10px;
+    grid-template-columns: var(--sidebar-width) calc(100% - var(--sidebar-width) * 2 - 40px) var(--sidebar-width);
+    gap: var(--gap);
+    padding: var(--container-padding);
+    margin: 0 0px; /* Ensures there's a space between the content and the viewport's edges */
 }
 
 @media (min-width: 600px) {
@@ -48,11 +50,16 @@ body {
     --note-padding: 10px;
     --note-border: 1px solid #ccc;
     --note-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    --sidebar-width: 15vw; /* 15% of the viewport width */
+    --sidebar-padding: 1vw; /* Responsive padding */
+    --gap: 2vw; /* Responsive gap between grid items */
+    --container-padding: 2vw; /* Responsive padding for containers */
+
 }
 
 .notes-grid {
     display: grid;
-    gap: var(--grid-gap);
+    gap: var(--gap);
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
@@ -83,11 +90,21 @@ body {
     cursor: pointer;
 }
 
-.note-form, .edit-buttons {
+.note-form, .edit-buttons,.create-label-button {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
+
+.create-label-button button {
+    background-color: #cb9ae9; /* Purple background */
+    border: none; /* Removes border */
+    padding: 2%; /* Add some padding for better appearance */
+    cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
+    border-radius: 5px; /* Optional: adds rounded corners */
+    margin-top: 5px;
+}
+
 
 textarea, input {
     border-radius: 5px;
@@ -98,7 +115,7 @@ textarea, input {
 
 .labels-sidebar {
     background-color: #f0f0f0;
-    padding: 20px;
+    padding: var(--sidebar-padding);
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -106,13 +123,14 @@ textarea, input {
     top: 20px;
     bottom: 20px;
     overflow-y: auto;
-    width: 200px;
+    width: var(--sidebar-width);
 }
 
 .selected-labels-container, .selected-label-tag {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    right: 20px;
 }
 
 .selected-label-tag {
