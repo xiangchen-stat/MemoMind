@@ -101,40 +101,39 @@ app.post('/api/signup', async (req, res) => {
 });
 
 // Calendar page -----------------------------------------
-// app.post('/api/events', async (req, res) => {
-//   const { title, start, userEmail } = req.body;
+app.post('/api/events', async (req, res) => {
+  const { title, start, userEmail } = req.body;
 
-//   try {
-//     const result = await database.collection('Events').insertOne({
-//       userEmail,
-//       title,
-//       start,
-//       // Add any other event properties here
-//     });
+  try {
+    const result = await database.collection('Events').insertOne({
+      userEmail,
+      title,
+      start,
+    });
 
-//     if (result.acknowledged) {
-//       const savedEvent = await database.collection('Events').findOne({ _id: result.insertedId });
-//       res.status(201).json(savedEvent); // Return the newly created event
-//     } else {
-//       res.status(400).json({ message: 'Failed to add event' });
-//     }
-//   } catch (error) {
-//     console.error('Error adding event:', error);
-//     res.status(500).json({ error: 'Failed to add event' });
-//   }
-// });
+    if (result.acknowledged) {
+      const savedEvent = await database.collection('Events').findOne({ _id: result.insertedId });
+      res.status(201).json(savedEvent); // Return the newly created event
+    } else {
+      res.status(400).json({ message: 'Failed to add event' });
+    }
+  } catch (error) {
+    console.error('Error adding event:', error);
+    res.status(500).json({ error: 'Failed to add event' });
+  }
+});
 
-// app.get("/api/events", async (req, res) => {
-//   const userEmail = req.query.userEmail;
+app.get("/api/events", async (req, res) => {
+  const userEmail = req.query.userEmail;
 
-//   try {
-//     const events = await database.collection("Events").find({ userEmail }).toArray();
-//     res.status(200).json(events);
-//   } catch (err) {
-//     console.error("Failed to fetch events:", err);
-//     res.status(500).json({ error: "Failed to fetch events" });
-//   }
-// });
+  try {
+    const events = await database.collection("Events").find({ userEmail }).toArray();
+    res.status(200).json(events);
+  } catch (err) {
+    console.error("Failed to fetch events:", err);
+    res.status(500).json({ error: "Failed to fetch events" });
+  }
+});
 
 // main page ---------------------------------------------
 
