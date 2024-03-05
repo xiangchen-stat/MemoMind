@@ -41,8 +41,11 @@ const NotesApp = () => {
     } else {
       setSelectedLabels(selectedLabels.filter((l) => l !== label));
     }
+  };  
+  const handleRemoveLabel = (labelToRemove) => {
+    setSelectedLabels(selectedLabels.filter(label => label !== labelToRemove));
   };
-    
+  
   // Function to click notes.
   const handleNoteClick = (note) => {
   if (selectedNote && selectedNote._id === note._id) {
@@ -167,6 +170,15 @@ const NotesApp = () => {
           required
         ></textarea>
 
+        {/* Display Selected Labels as Tags */}
+        <div className="selected-labels-container">
+          {selectedLabels.map((label, index) => (
+            <div key={index} className="selected-label-tag">
+              {label}
+              <button type="button" onClick={() => handleRemoveLabel(label)}>x</button>
+            </div>
+          ))}
+        </div>
           {selectedNote ? (
             <div className="edit-buttons">
               <button type="submit">Save</button>
@@ -176,20 +188,23 @@ const NotesApp = () => {
         </form>
               {/* Displaying notes from Database. */}
               <div className="notes-grid">
-                {Array.isArray(notes) && notes.map((note)=> (
+                {Array.isArray(notes) && notes.map((note) => (
                   <div key={note._id} className="note-container">
                     <div 
                       className={`note-item ${selectedNote && selectedNote._id === note._id ? 'note-selected' : ''}`}
-                      onClick={()=> handleNoteClick(note)}
+                      onClick={() => handleNoteClick(note)}
                     >
                       {/* Header for deleting Notes. */}
                       <div className="notes-header">
                         <button onClick={(event) => deleteNote(event, note._id)}>x</button>
                       </div>
-                      <NavLink to={`/notes/${note._id}`} activeClassName="active-note"></NavLink>
-                      {/* Actual display of notes. */}
+                      {/* Render labels here */}
+                      <div className="note-labels">
+                        {note.Labels && note.Labels.map((label, index) => (
+                          <span key={index} className="note-label">{label}</span>
+                        ))}
+                      </div>
                       <h2>{note.NoteName}</h2>
-                      
                       <p>{note.Contents}</p>
                     </div>
                   </div>
