@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import './NotesApp.css';
-import { NavLink } from 'react-router-dom';
+import React from 'react';
+import { useState, useEffect } from 'react';
+import './NotesApp.css'; 
+import { NavLink } from 'react-router-dom'; // Import Link at the top
 
 const NotesApp = () => {
   // State declarations

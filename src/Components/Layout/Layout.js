@@ -24,6 +24,7 @@ const Layout = ({ children }) => {
         </div>
         <NavLink to="/Notes" className="nav-link" activeClassName="active">Notes</NavLink>
         <NavLink to="/Calendar" className="nav-link" activeClassName="active">Calendar</NavLink>
+        <NavLink to="/Editor" className="nav-link" activeClassName="active">Editor</NavLink>
       </div>
       <div className="content">{children}</div>
     </div>
