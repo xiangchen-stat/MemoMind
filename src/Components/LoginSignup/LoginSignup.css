@@ -1,60 +1,85 @@
-.container{
-    display: flex;
-    flex-direction: column;
-    margin: auto;
-    margin-top: 90px;
-    margin-bottom: 90px;
-    width: 600px;
-    background: #fff;
-    padding-bottom: 0px;
+body {
+  margin: 0;
+  padding: 0;
+  background: #f0f0f0;
 }
+
+.login-body {
+  overflow: hidden;
+}
+
+.login-body .container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  width: 90%;
+  background: #fff;
+  padding: 32px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  transform: scale(0.8);
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 30px;
+  }
+}
+
 
 .header{
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 9px;
+    gap: 7px;
     width: 100%;
-    margin-top: 50px;
+    margin-top: 40px;
 }
 
 .text{
     color: #3c009d;
-    font-size: 48px;
+    font-size: 38px;
     font-weight: 700;
 }
 
 .underline{
-    width: 61px;
-    height: 6px;
+    width: 49px;
+    height: 5px;
     background: #3c009d;
     border-radius: 9px;
 }
 
 .inputs{
-    margin-top: 55px;
+    margin-top: 44px;
     display: flex;
     flex-direction: column;
-    gap: 35px;
+    gap: 28px;
 }
 
 .input{
     display: flex;
     align-items: center;
     margin: auto;
-    width: 480px;
-    height: 80px;
+    width: 384px;
+    height: 64px;
     background: #eaeaea;
     border-radius: 6px;
 }
 
 .input img{
-    margin: 0px 30px;
+    margin: 0px 24px;
 }
 
 .input input{
-    height: 50px;
-    width: 400px;
+    height: 40px;
+    width: 320px;
     background: transparent;
     border: none;
     outline: none;
@@ -63,10 +88,10 @@
 }
 
 .forgot-password{
-    padding-left: 62px;
-    margin-top: 27px;
+    padding-left: 50px;
+    margin-top: 22px;
     color: #797979;
-    font-size: 18px;
+    font-size: 14px;
 }
 
 .forgot-password span{
@@ -76,22 +101,33 @@
 
 .submit-container{
     display: flex;
-    gap: 30px;
-    margin: 60px auto;
+    gap: 24px;
+    margin: 48px auto;
+}
+
+.submit:hover {
+  background: #5a00e0;
+  transition: background 0.2s ease;
+}
+
+.submit.gray:hover {
+  background: #ccc;
+  color: #333;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .submit{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 220px;
-    height: 59px;
+    width: 176px;
+    height: 47px;
     color: #fff;
     background: #4c00b4;
-    border-radius: 50px;
+    border-radius: 40px;
     font-weight: 700;
     cursor:pointer;
-    margin-bottom: 90px;
+    margin-bottom: 72px;
 }
 
 .gray{

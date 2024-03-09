@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import "./LoginSignup.css";
+import { useEffect } from 'react';
 //import { useAuth } from '../../AuthContext.js';
 import user_icon from "../Assets/person.png";
 import email_icon from "../Assets/email.png";
@@ -20,6 +21,13 @@ const LoginSignup = () => {
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState(""); // Added state for error message
   const [successMsg, setSuccessMsg] = useState(""); // Added state for error message
+
+  useEffect(() => {
+    document.body.classList.add('login-body');
+    return () => {
+      document.body.classList.remove('login-body');
+    };
+  }, []);
 
   // Function that handles signup.
   const handleSignUp = async () => {
@@ -106,7 +114,7 @@ const LoginSignup = () => {
           <img src={email_icon} alt="" />
           <input
             type="email"
-            placeholder="Email Id"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />

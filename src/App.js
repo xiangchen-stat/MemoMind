@@ -12,25 +12,27 @@ import ProtectedRoute from './LoginStore/ProtectedRoute.js';
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<LoginSignup />} />
-        <Route path="/Notes" element={
-          <ProtectedRoute>
-            <Layout><NotesApp /></Layout>
-          </ProtectedRoute>} />
-        <Route path="/manage-notes" element={
-          <ProtectedRoute>
-            <Layout><NoteManager /></Layout>
-          </ProtectedRoute>} />
-        <Route path="/calendar" element={
-          <ProtectedRoute>
-            <Layout><Calendar /></Layout>
-          </ProtectedRoute>} />
+      <div className="app-container"> {}
+        <Routes>
+          <Route path="/" element={<LoginSignup />} />
+          <Route path="/Notes" element={
+            <ProtectedRoute>
+              <Layout><NotesApp /></Layout>
+            </ProtectedRoute>} />
+          <Route path="/manage-notes" element={
+            <ProtectedRoute>
+              <Layout><NoteManager /></Layout>
+            </ProtectedRoute>} />
+          <Route path="/calendar" element={
+            <ProtectedRoute>
+              <Layout><Calendar /></Layout>
+            </ProtectedRoute>} />
           <Route path="/Editor" element={
-          <ProtectedRoute>
-            <Layout><CustomEditor /></Layout>
-          </ProtectedRoute>} />
-      </Routes>
+            <ProtectedRoute>
+              <Layout><CustomEditor /></Layout>
+            </ProtectedRoute>} />
+        </Routes>
+      </div>
     </Router>
   );
 }
