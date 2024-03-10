@@ -99,13 +99,54 @@ app.post('/api/signup', async (req, res) => {
     res.status(500).json({ error: 'Failed to add user' });
   }
 });
-// Names page -----------------------------------------
+// Videos page -----------------------------------------
+// Endpoint to fetch videos for a user
+app.get('/api/videos', async (req, res) => {
+  const userEmail = req.query.userEmail;
+  // console.log("Getting user name: ", userEmail);
+  try {
+    const videos = await database.collection("Videos").find({ userEmail }).toArray();
+    // console.log("dumb", videos);
+    res.status(200).json(videos);
+  } catch (err) {
+    console.error("Failed to fetch videos:", err);
+    res.status(500).json({ error: "Failed to fetch videos" });
+  }
+});
+
+app.post('/api/videos', async (req, res) => {
+  const { body, userEmail } = req.body;
+  try {
+    const query = { userEmail }; // Query to find existing videos with the same userEmail
+    const result = await database.collection('Videos').updateOne(query, {
+      $set: {
+        body
+      },
+      $setOnInsert: {
+        userEmail // Ensure this field is only set if a new document is created
+      }
+    }, { upsert: true });
+
+    if (result.matchedCount > 0) {
+      // Existing document updated
+      const updatedVideos = await database.collection('Videos').findOne(query);
+      res.status(200).json(updatedVideos); // Return the updated document
+    } else {
+      // New document created
+      const newVideos = await database.collection('Videos').findOne({ _id: result.upsertedId });
+      res.status(201).json(newVideos); // Return the newly created document
+    }
+  } catch (error) {
+    console.error('Error adding/updating videos:', error);
+    res.status(500).json({ error: 'Failed to add/update videos' });
+  }
+});
 
 // Images page -----------------------------------------
 // Endpoint to fetch images for a user
 app.get('/api/images', async (req, res) => {
   const userEmail = req.query.userEmail;
-  console.log("Getting user name: ", userEmail);
+  // console.log("Getting user name: ", userEmail);
   try {
     const images = await database.collection("Images").find({ userEmail }).toArray();
     // console.log("dumb", images);
@@ -116,10 +157,8 @@ app.get('/api/images', async (req, res) => {
   }
 });
 
-
 app.post('/api/images', async (req, res) => {
   const { body, userEmail } = req.body;
-
   try {
     const query = { userEmail }; // Query to find existing images with the same userEmail
     const result = await database.collection('Images').updateOne(query, {
@@ -145,7 +184,6 @@ app.post('/api/images', async (req, res) => {
     res.status(500).json({ error: 'Failed to add/update images' });
   }
 });
-
 
 // app.put('/api/images', async (req, res) => {
 //   const { body, userEmail } = req.body;        // Assuming body is sent in the request body

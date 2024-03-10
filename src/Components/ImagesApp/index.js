@@ -28,7 +28,7 @@ const CustomImageEditor = () => {
       const data = await response.json();
       if (data.length > 0) {
         const rawContent = data[0].body; // Assuming the body property contains the content
-        console.log("This is rawContent", rawContent);
+        // console.log("This is rawContent", rawContent);
         if (rawContent) {
           setEditorState(EditorState.createWithContent(convertFromRaw(rawContent)));
         } else {
@@ -47,7 +47,7 @@ const CustomImageEditor = () => {
       //     setEditorState(EditorState.createEmpty());
       //   }
       // }
-      console.log('Server response:', data);
+      // console.log('Server response:', data);
     } catch (error) {
       console.error("Error fetching images:", error);
       setEditorState(EditorState.createEmpty());
@@ -56,8 +56,8 @@ const CustomImageEditor = () => {
   
   const saveImages = async () => {
     const contentState = editorState.getCurrentContent();
-    console.log("User Email:", userEmail);
-    console.log("Content State:", contentState);
+    // console.log("User Email:", userEmail);
+    // console.log("Content State:", contentState);
     const content = convertToRaw(contentState);
 
     const newImage = {
@@ -73,9 +73,9 @@ const CustomImageEditor = () => {
         },
         body: JSON.stringify(newImage),
       });
-      console.log('Server response:', response);
-      const responseData = await response.json();
-      console.log('Server response:', responseData);
+      // console.log('Server response:', response);
+      // const responseData = await response.json();
+      // console.log('Server response:', responseData);
 
       if (!response.ok) {
         throw new Error('Failed to add images');
@@ -157,7 +157,7 @@ const CustomImageEditor = () => {
         onChange={onChange}
         modifier={imagePlugin.addImage}
       />
-      <button onClick={saveImages}>Save Image</button>
+      <button onClick={saveImages}>Save Image Contents</button>
     </div>
   );
 };
