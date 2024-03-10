@@ -25,7 +25,6 @@
     background-color: transparent; /* Ensures the button background is transparent */
     border: none; /* Removes button border */
     cursor: pointer; /* Ensures the cursor changes to a pointer to indicate clickability */
-    width: 100%; /* Ensures the button expands to fill its container */
 }
 
 .logout-button {

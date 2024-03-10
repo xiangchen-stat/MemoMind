@@ -5,9 +5,9 @@ import LoginSignup from './Components/LoginSignup/LoginSignup';
 import NotesApp from './Components/NotesApp/NotesApp';
 import PrivacyManager from './Components/PrivacyManager/PrivacyManager';
 import Calendar from './Components/Calendar/Calendar';
-import CustomEditor from './Components/NotesApp/CustomEditor';
-import Images from './ImagesApp/index';
-import Videos from './VideosApp/index';
+import CustomVideoEditor from './VideosApp/index.js';
+import Images from './ImagesApp/index.js';
+import Videos from './VideosApp/index.js';
 import './App.css';
 import Layout from './Components/Layout/Layout';
 import ProtectedRoute from './LoginStore/ProtectedRoute.js'; 
@@ -25,13 +25,13 @@ function App() {
           <ProtectedRoute>
             <Layout><NotesApp /></Layout>
           </ProtectedRoute>} />
-        <Route path="/calendar" element={
+        <Route path="/Calendar" element={
           <ProtectedRoute>
             <Layout><Calendar /></Layout>
           </ProtectedRoute>} />
         <Route path="/Editor" element={
           <ProtectedRoute>
-            <Layout><CustomEditor /></Layout>
+            <Layout><CustomVideoEditor /></Layout>
           </ProtectedRoute>} />
         <Route path="/PrivacyManager" element={
           <ProtectedRoute>
@@ -44,34 +44,16 @@ function App() {
         <Route path="/FriendsNotes/:friendEmail" element={
           <ProtectedRoute>
             <Layout><FriendNotes /></Layout>
-          </ProtectedRoute>
-        } />
+          </ProtectedRoute>} />
+        <Route path="/Images" element={
+          <ProtectedRoute>
+            <Layout><Images /></Layout> 
+          </ProtectedRoute>} />
+        <Route path="/Videos" element={
+          <ProtectedRoute>
+            <Layout><Videos /></Layout> 
+          </ProtectedRoute>} />
       </Routes>
-      <div className="app-container"> {}
-        <Routes>
-          <Route path="/" element={<LoginSignup />} />
-          <Route path="/notes" element={
-            <ProtectedRoute>
-              <Layout><NotesApp /></Layout>
-            </ProtectedRoute>} />
-          <Route path="/manage-notes" element={
-            <ProtectedRoute>
-              <Layout><NoteManager /></Layout>
-            </ProtectedRoute>} />
-          <Route path="/calendar" element={
-            <ProtectedRoute>
-              <Layout><Calendar /></Layout>
-            </ProtectedRoute>} />
-          <Route path="/images" element={
-            <ProtectedRoute>
-              <Layout><Images /></Layout>
-            </ProtectedRoute>} />
-            <Route path="/videos" element={
-            <ProtectedRoute>
-              <Layout><Videos/></Layout>
-            </ProtectedRoute>} />
-        </Routes>
-      </div>
     </Router>
   );
 }
