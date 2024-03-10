@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import './NoteManager.css'
-import logo from '../Assets/memomind.png'
+import './PrivacyManager.css'
 
 function NoteManager() {
   const [notes, setNotes] = useState([]); 
+  const userEmail = localStorage.getItem('userEmail');
 
   // Gets the data from the database.
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const response = await fetch('http://localhost:3001/manage-notes');
+        const response = await fetch(`http://localhost:3001/PrivacyManager?userEmail=${userEmail}`);
         const data = await response.json();
         setNotes(data);
+        //console.log(data);
       } catch (error) {
         console.error('Error fetching notes:', error);
+        setNotes([]);
       }
     };
 
@@ -22,20 +24,20 @@ function NoteManager() {
 
   const handleNotePrivacyChange = (event, index) => {
     const updatedNotes = [...notes];
-    updatedNotes[index].privacy = event.target.value;
+    updatedNotes[index].NotePrivacy = event.target.value;
     setNotes(updatedNotes);
   };
 
   const updateAllPrivacy = async () => {
     // Iterate over the `notes` array and send update requests for each note's privacy.
     const updatePromises = notes.map((note) =>
-      fetch(`http://localhost:3001/manage-notes/${note._id}`, {
+      fetch(`http://localhost:3001/PrivacyManager/${note._id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          privacy: note.privacy,
+          NotePrivacy: note.NotePrivacy,
         }),
       })
     );
@@ -43,6 +45,7 @@ function NoteManager() {
     try {
       await Promise.all(updatePromises);
       alert('All notes updated successfully!');
+      window.location.reload();
     } catch (error) {
       console.error('Error updating notes:', error);
     }
@@ -62,9 +65,8 @@ function NoteManager() {
           {notes.map((note, index) => (
              <li key={note._id} className="note-item">
                     <h4>{note.NoteName}</h4>
-                    <p>{note.Contents}</p>
               <select
-                value={note.privacy}
+                value={note.NotePrivacy}
                 onChange={(e) => handleNotePrivacyChange(e, index)}
                 className="note-privacy-select"
               >
