@@ -1,12 +1,14 @@
 
-.calendar-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-    color: black;
-    max-width:1000px;
-  }
+.calendar-container .fc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  color: black;
+  max-width: 1000px;
+  padding-top: 20px;
+}
+
 .custom-calendar {
     width: 100%; /* Ensures the calendar fills its container */
 }

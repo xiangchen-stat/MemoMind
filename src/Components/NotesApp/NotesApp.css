@@ -4,6 +4,32 @@ body {
   padding-top: 20%;
 }
 
+.sidebar {
+    width: 250px;
+    background-color: #f0f0f0; /* Light grey background */
+    padding: var(--sidebar-padding);
+
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    bottom: 20px;
+    overflow-y: auto;
+    width: var(--sidebar-width);
+    left: 20px;
+}
+
+.sidebar a {
+    display: block;
+    padding: 10px;
+    margin: 5px 0;
+    text-decoration: none;
+    color: #333; /* Dark text for contrast */
+}
+.sidebar a:hover {
+    background-color: #ddd; /* Lighter grey on hover */
+}
+
+
 .app-container {
   display: grid;
   grid-template-columns: var(--sidebar-width) calc(100% - var(--sidebar-width) * 2 - 40px) var(--sidebar-width);

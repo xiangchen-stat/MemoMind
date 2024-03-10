@@ -14,30 +14,32 @@ const NotesApp = () => {
   const [selectedLabels, setSelectedLabels] = useState([]); // Labels for the current note
   const [newLabel, setNewLabel] = useState(''); // State for managing new label input
   const userEmail = localStorage.getItem('userEmail');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [labelSearchQuery, setLabelSearchQuery] = useState('');
+  const [filterMode, setFilterMode] = useState('content');
 
-  // Fetch notes from the database.
-  useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        const response = await fetch(`http://localhost:3001/Notes?userEmail=${userEmail}`);
-        const data = await response.json();
-        setNotes(data);
-        //console.log(data);
-        // fetch labels from notes
-        const allLabels = data.reduce((acc, note) => {
-          const labels = Array.isArray(note.Labels) ? note.Labels : [];
-          return [...acc, ...labels];
-        }, []);
-        setLabels([...new Set(allLabels)]);
-      } catch (error) {
-        console.error('Error fetching notes:', error);
-        setNotes([]);
-      }
-    };
+useEffect(() => {
+  const fetchNotes = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/Notes?userEmail=${userEmail}`);
+      const data = await response.json();
+      setNotes(data);
+      console.log(data);
+      const allLabels = data.reduce((acc, note) => {
+        const labels = Array.isArray(note.Labels) ? note.Labels : [];
+        return [...acc, ...labels];
+      }, []);
+      setLabels([...new Set(allLabels)]);
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+      setNotes([]);
+    }
+  };
 
-    fetchNotes();
-  }, []);
+  fetchNotes();
+}, []);
 
+  
   const handleCreateLabel = () => {
     if (newLabel && !labels.includes(newLabel)) {
       setLabels([...labels, newLabel]);
@@ -163,11 +165,35 @@ const NotesApp = () => {
     }
   };
   
-
+  const filteredNotes = notes.filter((note) => {
+    const matchesContent = searchQuery.length === 0 || note.Contents.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesLabel = labelSearchQuery.length === 0 || (note.Labels && note.Labels.some(label => label.toLowerCase().includes(labelSearchQuery.toLowerCase())));
+    
+    return matchesContent && matchesLabel;
+  });
+  
+  
   return (
     <div className="app-container">
       <div className="notes-section">
         <form className="note-form" onSubmit={(event) => selectedNote ? handleUpdateNote(event) : handleAddNote(event)}>
+        <div className="search-container" style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <input
+          type="text"
+          placeholder="Search notes by content..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          style={{ flex: 1, marginRight: '10px' }} // Adjust flex and margin as needed
+        />
+        <input
+          type="text"
+          placeholder="Search notes by label..."
+          value={labelSearchQuery}
+          onChange={(e) => setLabelSearchQuery(e.target.value)}
+          style={{ flex: 1 }} // Adjust flex as needed
+        />
+      </div>
+
         <input
           value={title}
           onChange={(event) => setTitle(event.target.value)}
@@ -199,7 +225,7 @@ const NotesApp = () => {
           ) : ( <button type="submit">Add Note</button>)}
         </form>
         <div className="notes-grid">
-      {notes.map((note) => (
+      {filteredNotes.map((note) => (
         <div key={note._id} className="note-container">
           <div 
             className={`note-item ${selectedNote && selectedNote._id === note._id ? 'note-selected' : ''}`}
@@ -217,7 +243,7 @@ const NotesApp = () => {
                   <span key={index} className="note-label">{label}</span>
                 ))
               ) : (
-                <p>No labels</p>
+                <p></p>
               )}
             </div>
           </div>

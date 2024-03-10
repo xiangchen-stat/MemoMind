@@ -6,6 +6,9 @@ import NotesApp from './Components/NotesApp/NotesApp';
 import PrivacyManager from './Components/PrivacyManager/PrivacyManager';
 import Calendar from './Components/Calendar/Calendar';
 import CustomEditor from './Components/NotesApp/CustomEditor';
+import Images from './ImagesApp/index';
+import Videos from './VideosApp/index';
+import './App.css';
 import Layout from './Components/Layout/Layout';
 import ProtectedRoute from './LoginStore/ProtectedRoute.js'; 
 import FriendManager from './Components/FriendManager/FriendManager'
@@ -44,6 +47,31 @@ function App() {
           </ProtectedRoute>
         } />
       </Routes>
+      <div className="app-container"> {}
+        <Routes>
+          <Route path="/" element={<LoginSignup />} />
+          <Route path="/notes" element={
+            <ProtectedRoute>
+              <Layout><NotesApp /></Layout>
+            </ProtectedRoute>} />
+          <Route path="/manage-notes" element={
+            <ProtectedRoute>
+              <Layout><NoteManager /></Layout>
+            </ProtectedRoute>} />
+          <Route path="/calendar" element={
+            <ProtectedRoute>
+              <Layout><Calendar /></Layout>
+            </ProtectedRoute>} />
+          <Route path="/images" element={
+            <ProtectedRoute>
+              <Layout><Images /></Layout>
+            </ProtectedRoute>} />
+            <Route path="/videos" element={
+            <ProtectedRoute>
+              <Layout><Videos/></Layout>
+            </ProtectedRoute>} />
+        </Routes>
+      </div>
     </Router>
   );
 }
