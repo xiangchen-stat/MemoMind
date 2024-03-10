@@ -4,7 +4,8 @@ import LoginSignup from './Components/LoginSignup/LoginSignup';
 import NotesApp from './Components/NotesApp/NotesApp';
 import NoteManager from './Components/NoteManager/NoteManager';
 import Calendar from './Components/Calendar/Calendar';
-import CustomEditor from './Components/NotesApp/CustomEditor';
+import Images from './ImagesApp/index';
+import Videos from './VideosApp/index';
 import './App.css';
 import Layout from './Components/Layout/Layout';
 import ProtectedRoute from './LoginStore/ProtectedRoute.js'; 
@@ -15,7 +16,7 @@ function App() {
       <div className="app-container"> {}
         <Routes>
           <Route path="/" element={<LoginSignup />} />
-          <Route path="/Notes" element={
+          <Route path="/notes" element={
             <ProtectedRoute>
               <Layout><NotesApp /></Layout>
             </ProtectedRoute>} />
@@ -27,9 +28,13 @@ function App() {
             <ProtectedRoute>
               <Layout><Calendar /></Layout>
             </ProtectedRoute>} />
-          <Route path="/Editor" element={
+          <Route path="/images" element={
             <ProtectedRoute>
-              <Layout><CustomEditor /></Layout>
+              <Layout><Images /></Layout>
+            </ProtectedRoute>} />
+            <Route path="/videos" element={
+            <ProtectedRoute>
+              <Layout><Videos/></Layout>
             </ProtectedRoute>} />
         </Routes>
       </div>

@@ -100,6 +100,60 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
+// Images page -----------------------------------------
+app.post('/api/images', async (req, res) => {
+  const { tile, start, userEmail} = req.body;
+  try {
+    const result = await database.collection('Images').insertOne({
+      userEmail,
+      text,
+      imageUrls,
+    })
+    if (result.acknowledged) {
+      const savedImages = await database.collection('Images').findOne({_id: result.insertedID});
+      res.status(201).json(savedImages);
+    } else {
+      res.status(400).json({ message: 'Failed to add images'})
+    }
+  } catch (error) {
+    console.error('Error adding images:', error);
+    res.status(500).json({ error: 'Failed to add images'});
+  }
+});
+
+app.get("/api/images", async (req, res) => {
+  const userEmail = req.query.userEmail;
+
+  try {
+    const images = await database.collection("Images").find({ userEmail }).toArray();
+    res.status(200).json(images);
+  } catch (err) {
+    console.error("Failed to fetch images:", err);
+    res.status(500).json({ error: "Failed to fetch images" });
+  }
+});
+
+app.delete('/api/images/:id', async (req, res) => {
+  const { id } = req.params;
+  // Optional: You might also want to verify userEmail for ownership before deletion
+  const { userEmail } = req.query;
+
+  try {
+    const result = await database.collection('Images').deleteOne({
+      _id: new mongodb.ObjectId(id), // Convert string ID to MongoDB ObjectId
+      userEmail, // Optionally use this to ensure the user owns the event
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'Images not found' });
+    }
+
+    res.status(200).json({ message: 'Image deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting images:', error);
+    res.status(500).json({ error: 'Failed to delete images' });
+  }
+});
 // Calendar page -----------------------------------------
 app.post('/api/events', async (req, res) => {
   const { title, start, userEmail } = req.body;
@@ -156,7 +210,6 @@ app.delete('/api/events/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to delete event' });
   }
 });
-
 
 // main page ---------------------------------------------
 
