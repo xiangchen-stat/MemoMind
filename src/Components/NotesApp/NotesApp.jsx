@@ -8,22 +8,25 @@ const NotesApp = () => {
   const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [privacy, setNotesPrivacy] = useState("public");
   const [selectedNote, setSelectedNote] = useState(null);
   const [labels, setLabels] = useState([]); // All available labels
   const [selectedLabels, setSelectedLabels] = useState([]); // Labels for the current note
   const [newLabel, setNewLabel] = useState(''); // State for managing new label input
   const userEmail = localStorage.getItem('userEmail');
 
+  // Fetch notes from the database.
   useEffect(() => {
     const fetchNotes = async () => {
       try {
         const response = await fetch(`http://localhost:3001/Notes?userEmail=${userEmail}`);
         const data = await response.json();
         setNotes(data);
-        console.log(data);
+        //console.log(data);
         // fetch labels from notes
         const allLabels = data.reduce((acc, note) => {
-          return [...acc, ...note.Labels];
+          const labels = Array.isArray(note.Labels) ? note.Labels : [];
+          return [...acc, ...labels];
         }, []);
         setLabels([...new Set(allLabels)]);
       } catch (error) {
@@ -76,6 +79,7 @@ const NotesApp = () => {
       NoteName: title,
       Contents: content,
       Labels: selectedLabels,
+      NotePrivacy: privacy,
     };
     try { /* add labels to backend later ?*/
       const response = await fetch(`http://localhost:3001/Notes?userEmail=${userEmail}`, {
