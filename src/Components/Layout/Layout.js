@@ -22,10 +22,11 @@ const Layout = ({ children }) => {
         <div className="nav-link-container">
           <button onClick={handleLogout} className="logout-button nav-link">Logout</button>
         </div>
-        <NavLink to="/notes" className="nav-link" activeClassName="active">Notes</NavLink>
-        <NavLink to="/calendar" className="nav-link" activeClassName="active">Calendar</NavLink>
-        <NavLink to="/images" className="nav-link" activeClassName="active">Images</NavLink>
-        <NavLink to="/videos" className="nav-link" activeClassName="active">Videos</NavLink>
+        <NavLink to="/notes" className="nav-link" activeclassname="active">Notes</NavLink>
+        <NavLink to="/calendar" className="nav-link" activeclassname="active">Calendar</NavLink>
+        <NavLink to="/images" className="nav-link" activeclassname="active">Images</NavLink>
+        <NavLink to="/videos" className="nav-link" activeclassname="active">Videos</NavLink>
+        <NavLink to="/profile" className="nav-link" activeclassname="active">Profile</NavLink>
       </div>
       <div className="content">{children}</div>
     </div>

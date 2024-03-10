@@ -4,11 +4,13 @@ import LoginSignup from './Components/LoginSignup/LoginSignup';
 import NotesApp from './Components/NotesApp/NotesApp';
 import NoteManager from './Components/NoteManager/NoteManager';
 import Calendar from './Components/Calendar/Calendar';
-import Images from './ImagesApp/index';
-import Videos from './VideosApp/index';
+import Images from './Components/ImagesApp/index';
+import Videos from './Components/VideosApp/index';
+import Name from './Components/Profile/index.js'
 import './App.css';
 import Layout from './Components/Layout/Layout';
-import ProtectedRoute from './LoginStore/ProtectedRoute.js'; 
+import ProtectedRoute from './LoginStore/ProtectedRoute.js';
+ 
 
 function App() {
   return (
@@ -35,6 +37,10 @@ function App() {
             <Route path="/videos" element={
             <ProtectedRoute>
               <Layout><Videos/></Layout>
+            </ProtectedRoute>} />
+            <Route path="/profile" element={
+            <ProtectedRoute>
+              <Layout><Name/></Layout>
             </ProtectedRoute>} />
         </Routes>
       </div>

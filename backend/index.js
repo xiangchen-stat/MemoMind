@@ -99,33 +99,16 @@ app.post('/api/signup', async (req, res) => {
     res.status(500).json({ error: 'Failed to add user' });
   }
 });
+// Names page -----------------------------------------
 
 // Images page -----------------------------------------
-app.post('/api/images', async (req, res) => {
-  const { tile, start, userEmail} = req.body;
-  try {
-    const result = await database.collection('Images').insertOne({
-      userEmail,
-      text,
-      imageUrls,
-    })
-    if (result.acknowledged) {
-      const savedImages = await database.collection('Images').findOne({_id: result.insertedID});
-      res.status(201).json(savedImages);
-    } else {
-      res.status(400).json({ message: 'Failed to add images'})
-    }
-  } catch (error) {
-    console.error('Error adding images:', error);
-    res.status(500).json({ error: 'Failed to add images'});
-  }
-});
-
-app.get("/api/images", async (req, res) => {
+// Endpoint to fetch images for a user
+app.get('/api/images', async (req, res) => {
   const userEmail = req.query.userEmail;
-
+  console.log("Getting user name: ", userEmail);
   try {
     const images = await database.collection("Images").find({ userEmail }).toArray();
+    // console.log("dumb", images);
     res.status(200).json(images);
   } catch (err) {
     console.error("Failed to fetch images:", err);
@@ -133,27 +116,59 @@ app.get("/api/images", async (req, res) => {
   }
 });
 
-app.delete('/api/images/:id', async (req, res) => {
-  const { id } = req.params;
-  // Optional: You might also want to verify userEmail for ownership before deletion
-  const { userEmail } = req.query;
+
+app.post('/api/images', async (req, res) => {
+  const { body, userEmail } = req.body;
 
   try {
-    const result = await database.collection('Images').deleteOne({
-      _id: new mongodb.ObjectId(id), // Convert string ID to MongoDB ObjectId
-      userEmail, // Optionally use this to ensure the user owns the event
-    });
+    const query = { userEmail }; // Query to find existing images with the same userEmail
+    const result = await database.collection('Images').updateOne(query, {
+      $set: {
+        body
+      },
+      $setOnInsert: {
+        userEmail // Ensure this field is only set if a new document is created
+      }
+    }, { upsert: true });
 
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ message: 'Images not found' });
+    if (result.matchedCount > 0) {
+      // Existing document updated
+      const updatedImages = await database.collection('Images').findOne(query);
+      res.status(200).json(updatedImages); // Return the updated document
+    } else {
+      // New document created
+      const newImages = await database.collection('Images').findOne({ _id: result.upsertedId });
+      res.status(201).json(newImages); // Return the newly created document
     }
-
-    res.status(200).json({ message: 'Image deleted successfully' });
   } catch (error) {
-    console.error('Error deleting images:', error);
-    res.status(500).json({ error: 'Failed to delete images' });
+    console.error('Error adding/updating images:', error);
+    res.status(500).json({ error: 'Failed to add/update images' });
   }
 });
+
+
+// app.put('/api/images', async (req, res) => {
+//   const { body, userEmail } = req.body;        // Assuming body is sent in the request body
+//   console.log("This was run", userEmail);
+//   console.log("This is request body", req.body);
+//   try {
+//     const updateResult = await database.collection('Images').updateOne(
+//       { $set: { body } },
+//       { userEmail }
+//     );
+//     console.log("This is updated request body", updateResult);
+//     if (updateResult.modifiedCount === 1) {
+//       const updatedImage = await database.collection('Images').findOne({ userEmail });
+//       res.status(200).json(updatedImage); // Return the updated image
+//     } else {
+//       res.status(404).json({ message: 'Image not found for user' });
+//     }
+//   } catch (error) {
+//     console.error('Error updating image:', error);
+//     res.status(500).json({ error: 'Failed to update image' });
+//   }
+// });
+
 // Calendar page -----------------------------------------
 app.post('/api/events', async (req, res) => {
   const { title, start, userEmail } = req.body;
