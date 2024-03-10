@@ -1,0 +1,57 @@
+:root {
+    --background-color-section: #f9f9f9;
+    --spacing-small: 10px;
+    --spacing-medium: 20px;
+    --border-radius: 5px;
+  }
+  
+  .FriendManager {
+    display: flex;
+    flex-direction: column; 
+    padding: 20px;
+  }
+  
+  .friend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
+  
+  .friend-link {
+    text-decoration: none; 
+    color: black; 
+  }
+  
+  .SectionsContainer {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; 
+    margin-top: 10%;
+  }
+  
+  .Section {
+    flex: 1 0 300px;
+    background-color: var(--background-color-section); 
+    padding: var(--spacing-small);
+    border-radius: var(--border-radius);
+    margin: auto;
+  }
+  
+  .Section h3 {
+    margin-top: 0;
+  }
+  
+  .Section ul {
+    list-style-type: none; 
+    padding: 0;
+  }
+  
+  .Section li {
+    margin-bottom: var(--spacing-small);
+  }
+  
+  .Section button {
+    margin-left: var(--spacing-small);
+  }
+  

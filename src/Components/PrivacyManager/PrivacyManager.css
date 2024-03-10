@@ -1,0 +1,59 @@
+.body, html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* for privacy setting */
+.custom-select-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0%;
+}
+
+.custom-select {
+  position: relative;
+  width: 100%; 
+  background-color: #fff;
+  padding: 10%; 
+  border: 1px solid #ccc;
+  border-radius: 10px; 
+  box-shadow: 0 5px 8px rgba(0,0,0,0.1);
+  margin-top: 0%;
+}
+
+.custom-select select {
+  width: 120px; 
+  padding: 10px; 
+  border-radius: 6px; 
+  border: 1px solid #ccc; 
+}
+
+
+
+/* for notes, work in progress */
+.notes-list h3 {
+  margin: 0 0 10px;
+}
+
+.notes-list ul {
+  list-style: none;
+  padding: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 20px;
+}
+
+.notes-list li {
+  margin-bottom: 10px;
+}
+
+.notes-list li:last-child {
+  margin-bottom: 0;
+}
