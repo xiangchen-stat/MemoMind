@@ -1,161 +1,140 @@
 body {
-    margin: 0;
-    background-color: lightgray;
-    padding-top: 20%;
+  margin: 0;
+  background-color: lightgray;
+  padding-top: 20%;
 }
-.sidebar {
-    width: 250px;
-    background-color: #f0f0f0; /* Light grey background */
-    padding: var(--sidebar-padding);
-
-    position: fixed;
-    left: 20px;
-    top: 20px;
-    bottom: 20px;
-    overflow-y: auto;
-    width: var(--sidebar-width);
-    left: 20px;
-}
-
-.sidebar a {
-    display: block;
-    padding: 10px;
-    margin: 5px 0;
-    text-decoration: none;
-    color: #333; /* Dark text for contrast */
-}
-.sidebar a:hover {
-    background-color: #ddd; /* Lighter grey on hover */
-}
-
 
 .app-container {
-    display: grid;
-    grid-template-columns: var(--sidebar-width) calc(100% - var(--sidebar-width) * 2 - 40px) var(--sidebar-width);
-    gap: var(--gap);
-    padding: var(--container-padding);
-    margin: 0 0px; /* Ensures there's a space between the content and the viewport's edges */
+  display: grid;
+  grid-template-columns: var(--sidebar-width) calc(100% - var(--sidebar-width) * 2 - 40px) var(--sidebar-width);
+  gap: var(--gap);
+  padding: var(--container-padding);
+  margin: 0 0px; /* Ensures there's a space between the content and the viewport's edges */
 }
 
 @media (min-width: 600px) {
-    .app-container {
-        grid-template-columns: 600px 1fr; /* Adjusts the proportion for wider screens */
-    }
+  .app-container {
+      grid-template-columns: 600px 1fr; /* Adjusts the proportion for wider screens */
+  }
 }
 
 :root {
-    --grid-gap: 20px;
-    --note-background: azure;
-    --note-border-radius: 5px;
-    --note-padding: 10px;
-    --note-border: 1px solid #ccc;
-    --note-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    --sidebar-width: 15vw; /* 15% of the viewport width */
-    --sidebar-padding: 1vw; /* Responsive padding */
-    --gap: 2vw; /* Responsive gap between grid items */
-    --container-padding: 2vw; /* Responsive padding for containers */
+  --grid-gap: 20px;
+  --note-background: azure;
+  --note-border-radius: 5px;
+  --note-padding: 10px;
+  --note-border: 1px solid #ccc;
+  --note-box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  --sidebar-width: 15vw; /* 15% of the viewport width */
+  --sidebar-padding: 1vw; /* Responsive padding */
+  --gap: 2vw; /* Responsive gap between grid items */
+  --container-padding: 2vw; /* Responsive padding for containers */
 
 }
 
 .notes-grid {
-    display: grid;
-    gap: var(--gap);
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 .note-container {
-    height: auto;
-    overflow-y: auto;
-    padding: 10px;
+  height: auto;
+  overflow-y: auto;
+  padding: 10px;
 }
 
 .note-item {
-    word-wrap: break-word;
-    border: var(--note-border);
-    padding: var(--note-padding);
-    border-radius: var(--note-border-radius);
-    background-color: var(--note-background);
-    box-shadow: var(--note-box-shadow);
-    cursor: pointer;
+  word-wrap: break-word;
+  border: var(--note-border);
+  padding: var(--note-padding);
+  border-radius: var(--note-border-radius);
+  background-color: var(--note-background);
+  box-shadow: var(--note-box-shadow);
+  cursor: pointer;
 }
 
 .notes-header {
-    display: flex;
-    justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .notes-header button, .note-form button, .selected-label-tag button {
-    background: #cb9ae9;
-    border: none;
-    cursor: pointer;
+  background: #cb9ae9;
+  border: none;
+  cursor: pointer;
 }
 
 .note-form, .edit-buttons,.create-label-button {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.note-selected {
+  border-color: #007bff; 
+  background-color: #e7f1ff; 
 }
 
 .create-label-button button {
-    background-color: #cb9ae9; /* Purple background */
-    border: none; /* Removes border */
-    padding: 2%; /* Add some padding for better appearance */
-    cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
-    border-radius: 5px; /* Optional: adds rounded corners */
-    margin-top: 5px;
+  background-color: #cb9ae9; /* Purple background */
+  border: none; /* Removes border */
+  padding: 2%; /* Add some padding for better appearance */
+  cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
+  border-radius: 5px; /* Optional: adds rounded corners */
+  margin-top: 5px;
 }
 
 
 textarea, input {
-    border-radius: 5px;
-    border: 1px solid black;
-    padding: 10px;
-    font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid black;
+  padding: 10px;
+  font-size: 16px;
 }
 
 .labels-sidebar {
-    background-color: #f0f0f0;
-    padding: var(--sidebar-padding);
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    right: 20px;
-    top: 20px;
-    bottom: 20px;
-    overflow-y: auto;
-    width: var(--sidebar-width);
+  background-color: #f0f0f0;
+  padding: var(--sidebar-padding);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  bottom: 20px;
+  overflow-y: auto;
+  width: var(--sidebar-width);
 }
 
 .selected-labels-container, .selected-label-tag {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    right: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  right: 20px;
 }
 
 .selected-label-tag {
-    align-items: center;
-    padding: 5px 10px;
-    border-radius: 4px;
-    background-color: #cb9ae9;
-    color: rgb(34, 33, 33);
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background-color: #cb9ae9;
+  color: rgb(34, 33, 33);
 }
 
 
 .note-labels {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-bottom: 5px; /* Space between labels and the note title */
-  }
-  
-  .note-label {
-    background-color: #cb9ae9;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    /* make gaps between labels */
-    margin-right: 5px;
-  }
-  
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 5px; /* Space between labels and the note title */
+}
+
+.note-label {
+  background-color: #cb9ae9;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  /* make gaps between labels */
+  margin-right: 5px;
+}
