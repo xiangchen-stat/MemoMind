@@ -29,7 +29,6 @@ $cd MemoMind
 
 ### Install npm
 $npm install
-$npm install concurrently? <- delete if fixed
 
 ### Start the app!
 $npm run dev
