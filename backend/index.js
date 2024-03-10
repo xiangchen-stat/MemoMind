@@ -7,20 +7,7 @@ const session = require('express-session');
 app.use(express.json());
 app.use(cors());
 
-/*
-mongoose.connect("mongodb+srv://admin:abc12345@admin.bzmamr4.mongodb.net/?retryWrites=true&w=majority")
-  .then(() => console.log('Connected to MongoDB Atlas'))
-  .catch((err) => console.error('Could not connect to MongoDB Atlas', err));
-
-const port = process.env.PORT || 3001;
-app.listen(port, () => console.log(`Server listening on port ${port}`));
-
-app.use('/api/users', userRoutes);
-*/
-// This is just a placeholder for now, will adjust when usercreation is finished. 
-// Uncomment to play with a mock database. 
-// Must comment out other connections to make this work. 
-// Must change CONNECTION_STRING and DATABASENAME to your own.
+// Database connection -----------------------------------
 
 var Mongoclient = require("mongodb").MongoClient;
 require('dotenv').config();
@@ -41,7 +28,7 @@ Mongoclient.connect(CONNECTION_STRING).then(client => {
   console.error("Connection error to MongoDB:", error);
 });
 
-// login signup page -------------------------------------
+// login signup page --------------------------------------------------------
 
 // Configure session middleware
 app.use(session({
@@ -100,7 +87,8 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-// Calendar page -----------------------------------------
+// Calendar page ------------------------------------------------------
+
 app.post('/api/events', async (req, res) => {
   const { title, start, userEmail } = req.body;
 
@@ -158,7 +146,7 @@ app.delete('/api/events/:id', async (req, res) => {
 });
 
 
-// main page ---------------------------------------------
+// main page --------------------------------------------------------
 
 // Gets data from notes main page.
 app.get("/Notes", async (req, res) => {
@@ -175,7 +163,7 @@ app.get("/Notes", async (req, res) => {
 
 // Allows you to insert notes to the database.
 app.post('/Notes', async (req, res) => {
-  const { NoteName, Contents, userEmail, Labels} = req.body; 
+  const { NoteName, Contents, userEmail, Labels, NotePrivacy } = req.body; 
 
   try {
     const result = await database.collection('Notes').insertOne({
@@ -183,6 +171,7 @@ app.post('/Notes', async (req, res) => {
       NoteName,//: NoteName,
       Contents,//: Contents
       Labels,
+      NotePrivacy,
     });
 
     if (result.acknowledged) {
@@ -249,15 +238,14 @@ app.delete('/Notes/:id', async (req, res) => {
   }
 });
 
+// Privacy manager page --------------------------------------------
 
-// manage notes page ----------------------------------------
-
-// Gets data from the manage-notes page.
-app.get("/manage-notes", async (req, res) => {
-
+// Gets data for the Privacy manager page.
+app.get("/PrivacyManager", async (req, res) => {
+  const userEmail = req.query.userEmail;
   try {
     const notesCollection = database.collection("Notes");
-    const notes = await notesCollection.find({ userEmail: req.userEmail }).toArray();
+    const notes = await notesCollection.find({ userEmail }).toArray();
     res.status(200).json(notes);
   } catch (err) {
     console.error("Failed to fetch notes:", err);
@@ -266,23 +254,212 @@ app.get("/manage-notes", async (req, res) => {
 });
 
 // Puts data in the manage-notes page.
-app.put('/manage-notes/:id', async (req, res) => {
+app.put('/PrivacyManager/:id', async (req, res) => {
   const noteId = req.params.id;
-  const { privacy } = req.body;
+  const { NotePrivacy } = req.body;
 
   try {
     const result = await database.collection('Notes').updateOne(
       { _id: new mongodb.ObjectId(noteId) },
-      { $set: { privacy: privacy } }
+      { $set: { NotePrivacy: NotePrivacy } }
     );
 
     if (result.modifiedCount === 1) {
-      res.json({ message: 'Note updated successfully' });
+      res.json({ message: 'Note privacy updated successfully' });
     } else {
       res.status(404).json({ message: 'Note not found' });
     }
   } catch (error) {
-    console.error('Error updating note:', error);
-    res.status(500).json({ error: 'Failed to update note' });
+    console.error('Error updating privacy:', error);
+    res.status(500).json({ error: 'Failed to update privacy' });
+  }
+});
+
+// Friend manager page --------------------------------------------
+
+// Send friend request.
+app.post('/FriendManager/sendRequest', async (req, res) => {
+  const { senderEmail, receiverEmail } = req.body;
+
+  try {
+    // Edge case: Prevents from sending request to yourself.
+    if (senderEmail == receiverEmail) {
+      return res.status(400).json({ message: "Cannot send a friend request to yourself" });
+    }
+
+    // Edge case: Check if user exists.
+    const receiverExists = await database.collection("Users").findOne({ email: receiverEmail });
+    if (!receiverExists) {
+      return res.status(404).json({ message: "User does not exist" });
+    }
+
+    // Edge case: Automatically accepts a reciprocal friend request.
+    // (1) Check for existing request between two users.
+    const existingRequest = await database.collection("Requests").findOne({
+      
+      $or: [
+        { senderEmail: senderEmail, receiverEmail: receiverEmail },
+        { senderEmail: receiverEmail, receiverEmail: senderEmail }
+      ]
+    });
+
+    // (2) If an existing pending request from receiver to sender is found, accept it.
+    if (existingRequest && existingRequest.senderEmail === receiverEmail && existingRequest.status === 'pending') {
+      await database.collection("Requests").updateOne(
+        { _id: existingRequest._id },
+        { $set: { status: 'accepted' } }
+      );
+      return res.status(200).json({ message: "Friend request accepted" });
+    }
+
+    // Edge case: Prevents sending multiple requests to the same person.
+    if (existingRequest && existingRequest.senderEmail === senderEmail) {
+      return res.status(409).json({ message: "Friend request already sent" });
+    }
+
+    // Edge case: prevents sending request if already in friends list
+    const isAlreadyFriends = await database.collection("Requests").findOne({
+      $or: [
+        { senderEmail: senderEmail, receiverEmail: receiverEmail, status: 'accepted' },
+        { senderEmail: receiverEmail, receiverEmail: senderEmail, status: 'accepted' }
+      ]
+    });
+    if (isAlreadyFriends) {
+      return res.status(409).json({ message: "You are already friends with this user" });
+    }
+
+    // If edge cases passed, create a new friend request.
+    await database.collection("Requests").insertOne({
+      senderEmail,
+      receiverEmail,
+      status: 'pending',
+      createdAt: new Date(),
+    });
+
+    res.status(200).json({ message: "Friend request sent" });
+  } catch (error) {
+    console.error('Error processing friend request:', error);
+    res.status(500).json({ error: 'Failed to process friend request' });
+  }
+});
+
+
+// If the status between friend request is "accepted", then display them as friends.
+app.get("/FriendManager/friends", async (req, res) => {
+  const userEmail = req.query.userEmail;
+
+  try {
+    const requestsCollection = database.collection("Requests");
+    const friendsRequests = await requestsCollection.find({
+      $or: [{ senderEmail: userEmail }, { receiverEmail: userEmail }],
+      status: "accepted"
+    }).toArray();
+
+    res.status(200).json(friendsRequests);
+  } catch (err) {
+    console.error("Failed to fetch friends:", err);
+    res.status(500).json({ error: "Failed to fetch friends" });
+  }
+});
+
+// Gets the user's incoming/outgoing requests
+app.get("/FriendManager", async (req, res) => {
+  const userEmail = req.query.userEmail;
+
+  try {
+    const outgoingRequests = await database.collection("Requests").find({ senderEmail: userEmail, status: 'pending' }).toArray();
+    const incomingRequests = await database.collection("Requests").find({ receiverEmail: userEmail, status: 'pending' }).toArray();
+    res.status(200).json({ incoming: incomingRequests, outgoing: outgoingRequests });
+  } catch (err) {
+    console.error("Failed to fetch requests:", err);
+    res.status(500).json({ error: "Failed to fetch requests" });
+  }
+});
+
+// Marks the request as accepted.
+app.post('/FriendManager/acceptRequest', async (req, res) => {
+  const { requestId, senderEmail, receiverEmail } = req.body;
+
+  try {
+    const updateResult  = await database.collection("Requests").updateOne(
+      { _id: new mongodb.ObjectId(requestId), senderEmail, receiverEmail },
+      { $set: { status: 'accepted' } },
+    );
+
+    if (updateResult.matchedCount === 0) {
+      return res.status(404).json({ message: "Request not found" });
+    }
+    res.status(200).json({ message: "Friend request accepted" });
+  } catch (error) {
+    console.error('Error accepting friend request:', error);
+    res.status(500).json({ error: 'Failed to accept friend request' });
+  }
+});
+
+
+// Remove a friend from current friends list.
+app.post('/FriendManager/removeFriend', async (req, res) => {
+  const { userEmail, friendEmail } = req.body;
+
+  try {
+    await database.collection("Requests").deleteOne({
+      $or: [
+        { senderEmail: userEmail, receiverEmail: friendEmail, status: 'accepted' },
+        { senderEmail: friendEmail, receiverEmail: userEmail, status: 'accepted' }
+      ]
+    });
+    res.status(200).json({ message: "Friend removed successfully" });
+  } catch (error) {
+    console.error('Error removing friend:', error);
+    res.status(500).json({ error: 'Failed to remove friend' });
+  }
+});
+
+// Cancel incoming/outcoming friend request.
+app.post('/FriendManager/manageRequest', async (req, res) => {
+  const { userEmail, otherUserEmail } = req.body; 
+
+  try {
+    await database.collection("Requests").deleteOne({
+      $or: [
+      { senderEmail: userEmail, receiverEmail: otherUserEmail, status: 'pending' },
+      { senderEmail: otherUserEmail, receiverEmail: userEmail, status: 'pending' }
+      ]
+    });
+
+    res.status(200).json({ message: `Request removed successfully` });
+  } catch (error) {
+    console.error(`Error removing friend request:`, error);
+    res.status(500).json({ error: `Failed to remove friend request` });
+  }
+});
+
+// Friends Notes Page ---------------------------------------------------------
+
+// Get friends public notes.
+app.get('/FriendNotes', async (req, res) => {
+  const { userEmail, friendEmail } = req.query; 
+
+  try {
+    const isFriends = await database.collection("Requests").findOne({
+      $or: [
+      { senderEmail: userEmail, receiverEmail: friendEmail, status: 'accepted' },
+      { senderEmail: friendEmail, receiverEmail: userEmail, status: 'accepted' }
+      ]
+    });
+    //console.log("Is friends?", !!isFriends);
+
+    if (!isFriends) { 
+      return res.status(403).json({ message: "Users are not friends" });
+    }
+
+    const notes = await database.collection("Notes").find({ userEmail: friendEmail, NotePrivacy: "Public" }).toArray();
+    //console.log("Notes found:", notes); 
+    //console.log(friendEmail)
+
+    res.status(200).json(notes);
+  } catch (error) {
+    console.error('Error fetching friend\'s notes:', error);
+    res.status(500).json({ error: 'Failed to fetch friend\'s notes' });
   }
 });
