@@ -40,6 +40,24 @@ This frontend setup aims to provide an intuitive, user-friendly interface, allow
 The datastore for this application is implemented using MongoDB, which is flexible, scalable, and enables the handling diverse data structures. It storings and managing a wide array of data types across various collections, including users, profiles, notes, events, images, videos, and friend relationships. This choice allows for efficient storage and retrieval of dynamic content, user authentication details, personal media, calendar events, and social interactions, catering to the application's complex data handling needs. MongoDB's schema-less nature significantly aids in rapid development and iteration, enabling the application to evolve seamlessly as requirements grow or change.
 
 ## Setup
+### Setup With setup.sh
+1. Clone the repository 
+`$ git clone https://github.com/xiangchen-stat/MemoMind`
+or download the zip on GitHub.
+
+2. Make sure you're in the directory
+`$ cd MemoMind`
+
+3.  Make setup.sh executable
+`$ chmod +x setup.sh`
+
+4. Run setup.sh to install dependencies and run project!
+`$ ./setup.sh`
+
+5. Play around!
+Create an account and have fun, the content will be saved for your account.
+
+### Setup With Commands
 1. Clone the repository 
 `$ git clone https://github.com/xiangchen-stat/MemoMind`
 or download the zip on GitHub.
