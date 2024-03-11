@@ -33,7 +33,6 @@ const Layout = ({ children }) => {
         <NavLink to="/profile" className="nav-link" activeclassname="active">Profile</NavLink>
         <NavLink to="/PrivacyManager" className="nav-link" activeClassName="active">PrivacyManager</NavLink>
         <NavLink to="/FriendManager" className="nav-link" activeClassName="active">FriendManager</NavLink>
-        <NavLink to="/Editor" className="nav-link" activeClassName="active">Editor</NavLink>
         {/* Sidebar Footer */}
         <div className="sidebar-footer">
           <div>Welcome {getUserName()}!</div>

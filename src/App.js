@@ -5,9 +5,8 @@ import LoginSignup from './Components/LoginSignup/LoginSignup';
 import NotesApp from './Components/NotesApp/NotesApp';
 import PrivacyManager from './Components/PrivacyManager/PrivacyManager';
 import Calendar from './Components/Calendar/Calendar';
-import CustomVideoEditor from './VideosApp/index.js';
-import Images from './ImagesApp/index.js';
-import Videos from './VideosApp/index.js';
+import Images from './Components/ImagesApp/index.js';
+import Videos from './Components/VideosApp/index.js';
 import Profile from './Components/Profile/index.js'
 import './App.css';
 import Layout from './Components/Layout/Layout';
