@@ -63,21 +63,19 @@ app.post('/api/login', async (req, res) => {
 
 // Put the signup data into the database.
 const bcrypt = require('bcrypt');
-const saltRounds = 10; // The cost factor controls how much time is needed to calculate a single bcrypt hash. The higher the cost factor, the more hashing rounds are done. Increasing the cost factor by 1 doubles the necessary time. The actual value should be determined based on the environment.
+const saltRounds = 10; 
 
 // Put the signup data into the database.
 app.post('/api/signup', async (req, res) => {
-  const { name, email, password } = req.body; // Change `hashedPassword` to `password`
+  const { name, email, password } = req.body;
 
   try {
     const existingUser = await database.collection('Users').findOne({ email: email });
     if (existingUser) {
       return res.status(400).json({ message: "User with this email already exists" });
     }
-
-    // Hash the password before storing it
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const result = await database.collection('Users').insertOne({ name, email, password: hashedPassword }); // Store the hashed password
+    const result = await database.collection('Users').insertOne({ name, email, password: hashedPassword }); 
 
     if (result.acknowledged) {
       res.status(201).json({ message: 'User created successfully', user: { name, email }}); 
@@ -90,34 +88,95 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-
-// Images page --------------------------------------------------------
-
-app.post('/api/images', async (req, res) => {
-  const { tile, start, userEmail} = req.body;
+// Profile page -----------------------------------------
+app.get('/api/profile', async (req, res) => {
+  const userEmail = req.query.userEmail;
   try {
-    const result = await database.collection('Images').insertOne({
-      userEmail,
-      text,
-      imageUrls,
-    })
-    if (result.acknowledged) {
-      const savedImages = await database.collection('Images').findOne({_id: result.insertedID});
-      res.status(201).json(savedImages);
-    } else {
-      res.status(400).json({ message: 'Failed to add images'})
-    }
-  } catch (error) {
-    console.error('Error adding images:', error);
-    res.status(500).json({ error: 'Failed to add images'});
+    const profile = await database.collection("Profile").find({ userEmail }).toArray();
+    if (!profile) return res.status(404).json({ message: 'Profile not found' });
+    res.json(profile);
+  } catch (err) {
+    console.error("Failed to fetch profile:", err);
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 
-app.get("/api/images", async (req, res) => {
+app.post('/api/profile', async (req, res) => {
+  const { image, bio, userEmail } = req.body;
+  try {
+    const query = { userEmail };
+    const result = await database.collection("Profile").updateOne(query, {
+      $set: {
+        image,
+        bio
+      },
+      $setOnInsert: {
+        userEmail
+      }
+    }, { upsert: true });
+    if (result.matchedCount > 0) {
+      const updatedProfile = await database.collection("Profile").findOne(query);
+      res.status(200).json(updatedProfile);
+    } else {
+      const newProfile = await database.collection("Profile").findOne({_id: result.upsertedID});
+      res.status(201).json(newProfile);
+    }
+  } catch (error) {
+    console.error('Error adding/updating profile:', error);
+    res.status(500).json({ error: 'Failed to add/update profile' });
+  }
+});
+// Videos page -----------------------------------------
+// Endpoint to fetch videos for a user
+app.get('/api/videos', async (req, res) => {
   const userEmail = req.query.userEmail;
+  // console.log("Getting user name: ", userEmail);
+  try {
+    const videos = await database.collection("Videos").find({ userEmail }).toArray();
+    // console.log("dumb", videos);
+    res.status(200).json(videos);
+  } catch (err) {
+    console.error("Failed to fetch videos:", err);
+    res.status(500).json({ error: "Failed to fetch videos" });
+  }
+});
 
+app.post('/api/videos', async (req, res) => {
+  const { body, userEmail } = req.body;
+  try {
+    const query = { userEmail }; // Query to find existing videos with the same userEmail
+    const result = await database.collection('Videos').updateOne(query, {
+      $set: {
+        body
+      },
+      $setOnInsert: {
+        userEmail // Ensure this field is only set if a new document is created
+      }
+    }, { upsert: true });
+
+    if (result.matchedCount > 0) {
+      // Existing document updated
+      const updatedVideos = await database.collection('Videos').findOne(query);
+      res.status(200).json(updatedVideos); // Return the updated document
+    } else {
+      // New document created
+      const newVideos = await database.collection('Videos').findOne({ _id: result.upsertedId });
+      res.status(201).json(newVideos); // Return the newly created document
+    }
+  } catch (error) {
+    console.error('Error adding/updating videos:', error);
+    res.status(500).json({ error: 'Failed to add/update videos' });
+  }
+});
+
+// Images page -----------------------------------------
+// Endpoint to fetch images for a user
+app.get('/api/images', async (req, res) => {
+  const userEmail = req.query.userEmail;
+  // console.log("Getting user name: ", userEmail);
   try {
     const images = await database.collection("Images").find({ userEmail }).toArray();
+    // console.log("dumb", images);
     res.status(200).json(images);
   } catch (err) {
     console.error("Failed to fetch images:", err);
@@ -125,30 +184,57 @@ app.get("/api/images", async (req, res) => {
   }
 });
 
-app.delete('/api/images/:id', async (req, res) => {
-  const { id } = req.params;
-  // Optional: You might also want to verify userEmail for ownership before deletion
-  const { userEmail } = req.query;
-
+app.post('/api/images', async (req, res) => {
+  const { body, userEmail } = req.body;
   try {
-    const result = await database.collection('Images').deleteOne({
-      _id: new mongodb.ObjectId(id), // Convert string ID to MongoDB ObjectId
-      userEmail, // Optionally use this to ensure the user owns the event
-    });
+    const query = { userEmail }; // Query to find existing images with the same userEmail
+    const result = await database.collection('Images').updateOne(query, {
+      $set: {
+        body
+      },
+      $setOnInsert: {
+        userEmail // Ensure this field is only set if a new document is created
+      }
+    }, { upsert: true });
 
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ message: 'Images not found' });
+    if (result.matchedCount > 0) {
+      // Existing document updated
+      const updatedImages = await database.collection('Images').findOne(query);
+      res.status(200).json(updatedImages); // Return the updated document
+    } else {
+      // New document created
+      const newImages = await database.collection('Images').findOne({ _id: result.upsertedId });
+      res.status(201).json(newImages); // Return the newly created document
     }
-
-    res.status(200).json({ message: 'Image deleted successfully' });
   } catch (error) {
-    console.error('Error deleting images:', error);
-    res.status(500).json({ error: 'Failed to delete images' });
+    console.error('Error adding/updating images:', error);
+    res.status(500).json({ error: 'Failed to add/update images' });
   }
 });
 
-// Calendar page --------------------------------------------------------
+// app.put('/api/images', async (req, res) => {
+//   const { body, userEmail } = req.body;        // Assuming body is sent in the request body
+//   console.log("This was run", userEmail);
+//   console.log("This is request body", req.body);
+//   try {
+//     const updateResult = await database.collection('Images').updateOne(
+//       { $set: { body } },
+//       { userEmail }
+//     );
+//     console.log("This is updated request body", updateResult);
+//     if (updateResult.modifiedCount === 1) {
+//       const updatedImage = await database.collection('Images').findOne({ userEmail });
+//       res.status(200).json(updatedImage); // Return the updated image
+//     } else {
+//       res.status(404).json({ message: 'Image not found for user' });
+//     }
+//   } catch (error) {
+//     console.error('Error updating image:', error);
+//     res.status(500).json({ error: 'Failed to update image' });
+//   }
+// });
 
+// Calendar page -----------------------------------------
 app.post('/api/events', async (req, res) => {
   const { title, start, userEmail } = req.body;
 

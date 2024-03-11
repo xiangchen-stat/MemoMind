@@ -5,16 +5,15 @@ import LoginSignup from './Components/LoginSignup/LoginSignup';
 import NotesApp from './Components/NotesApp/NotesApp';
 import PrivacyManager from './Components/PrivacyManager/PrivacyManager';
 import Calendar from './Components/Calendar/Calendar';
-import CustomVideoEditor from './VideosApp/index.js';
-import Images from './ImagesApp/index.js';
-import Videos from './VideosApp/index.js';
+import Images from './Components/ImagesApp/index.js';
+import Videos from './Components/VideosApp/index.js';
+import Profile from './Components/Profile/index.js'
 import './App.css';
 import Layout from './Components/Layout/Layout';
 import ProtectedRoute from './LoginStore/ProtectedRoute.js'; 
 import FriendManager from './Components/FriendManager/FriendManager'
 import FriendNotes from './Components/FriendManager/FriendNotes';
 import './App.css';
-
 
 function App() {
   return (
@@ -29,10 +28,18 @@ function App() {
           <ProtectedRoute>
             <Layout><Calendar /></Layout>
           </ProtectedRoute>} />
-        <Route path="/Editor" element={
-          <ProtectedRoute>
-            <Layout><CustomVideoEditor /></Layout>
-          </ProtectedRoute>} />
+        <Route path="/images" element={
+            <ProtectedRoute>
+              <Layout><Images /></Layout>
+            </ProtectedRoute>} />
+         <Route path="/videos" element={
+            <ProtectedRoute>
+              <Layout><Videos/></Layout>
+            </ProtectedRoute>} />
+         <Route path="/profile" element={
+            <ProtectedRoute>
+              <Layout><Profile/></Layout>
+            </ProtectedRoute>} />
         <Route path="/PrivacyManager" element={
           <ProtectedRoute>
             <Layout><PrivacyManager /></Layout>

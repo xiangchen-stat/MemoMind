@@ -17,7 +17,6 @@ function Calendar() {
   const fetchEvents = async () => {
     try {
       const response = await fetch(`http://localhost:3001/api/events?userEmail=${userEmail}`);
-
       if (!response.ok) {
         throw new Error('Failed to fetch events');
       }

@@ -28,11 +28,11 @@ const Layout = ({ children }) => {
       <div className="sidebar">
         <NavLink to="/Notes" className="nav-link" activeClassName="active">Notes</NavLink>
         <NavLink to="/Calendar" className="nav-link" activeClassName="active">Calendar</NavLink>
+        <NavLink to="/images" className="nav-link" activeclassname="active">Images</NavLink>
+        <NavLink to="/videos" className="nav-link" activeclassname="active">Videos</NavLink>
+        <NavLink to="/profile" className="nav-link" activeclassname="active">Profile</NavLink>
         <NavLink to="/PrivacyManager" className="nav-link" activeClassName="active">PrivacyManager</NavLink>
         <NavLink to="/FriendManager" className="nav-link" activeClassName="active">FriendManager</NavLink>
-        <NavLink to="/Editor" className="nav-link" activeClassName="active">Editor</NavLink>
-        <NavLink to="/images" className="nav-link" activeClassName="active">Images</NavLink>
-        <NavLink to="/videos" className="nav-link" activeClassName="active">Videos</NavLink>
         {/* Sidebar Footer */}
         <div className="sidebar-footer">
           <div>Welcome {getUserName()}!</div>
