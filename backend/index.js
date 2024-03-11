@@ -99,6 +99,44 @@ app.post('/api/signup', async (req, res) => {
     res.status(500).json({ error: 'Failed to add user' });
   }
 });
+// Profile page -----------------------------------------
+app.get('/api/profile', async (req, res) => {
+  const userEmail = req.query.userEmail;
+  try {
+    const profile = await database.collection("Profile").find({ userEmail }).toArray();
+    if (!profile) return res.status(404).json({ message: 'Profile not found' });
+    res.json(profile);
+  } catch (err) {
+    console.error("Failed to fetch profile:", err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+app.post('/api/profile', async (req, res) => {
+  const { image, bio, userEmail } = req.body;
+  try {
+    const query = { userEmail };
+    const result = await database.collection("Profile").updateOne(query, {
+      $set: {
+        image,
+        bio
+      },
+      $setOnInsert: {
+        userEmail
+      }
+    }, { upsert: true });
+    if (result.matchedCount > 0) {
+      const updatedProfile = await database.collection("Profile").findOne(query);
+      res.status(200).json(updatedProfile);
+    } else {
+      const newProfile = await database.collection("Profile").findOne({_id: result.upsertedID});
+      res.status(201).json(newProfile);
+    }
+  } catch (error) {
+    console.error('Error adding/updating profile:', error);
+    res.status(500).json({ error: 'Failed to add/update profile' });
+  }
+});
 // Videos page -----------------------------------------
 // Endpoint to fetch videos for a user
 app.get('/api/videos', async (req, res) => {

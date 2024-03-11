@@ -1,20 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, {useEffect, useState} from "react";
+import './profile.css';
 
-function Name() {
-    const [userName, setUserName] = useState("");
-  
-    useEffect(() => {
-      // Assuming the server response includes a "user" object with a "name" property
-      const userData = JSON.parse(localStorage.getItem("userData")); // Hypothetical storage
-      if (userData && userData.user && userData.user.name) {
-        setUserName(userData.user.name);
-      }
-    }, []);
-      return (
-      <div>
-        Welcome, {userName}!
+
+function Profile() {
+  const [userName, setUserName] = useState("");  const userEmail = localStorage.getItem("userEmail");
+  const profilePictureUrl = "https://i.pinimg.com/736x/1e/94/7d/1e947dfcaad552afa209bceebbfac47b.jpg";
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    if (userData?.user?.name) {
+      setUserName(userData.user.name);
+    }
+  }, []);
+  return (
+    <div className="profile-container">
+      <img
+        src={profilePictureUrl}
+        alt="Profile Avatar"
+        className="profile-picture"
+      />
+      <div className="profile-info">
+        <p>Welcome, {userName}!</p>
+        <p>Your username is: {userEmail}.</p>
+        {/* Add more profile information sections here */}
       </div>
-    );
-  }
-  export default Name;
+    </div>
+  );
+}
 
+export default Profile;

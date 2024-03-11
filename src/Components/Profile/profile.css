@@ -1,0 +1,35 @@
+/* profile.css */
+
+.profile-container {
+    display: flex; /* Arrange picture and info side-by-side */
+    align-items: center;
+    /* Add some padding for visual spacing */
+    padding: 20px;
+    /* Center the entire container */
+    margin: 0 auto;
+    width: 80%; /* Adjust width as needed */
+  }
+  
+  .profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* Make it a circular image */
+    object-fit: cover; /* Ensure image fills the space */
+    margin-right: 20px; /* Add spacing between picture and text */
+  }
+  
+  .profile-info {
+    /* Break long text to avoid overflow */
+    word-wrap: break-word;
+  }
+  
+  .profile-info p {
+    margin-bottom: 5px; /* Add spacing between lines */
+  }
+  
+  /* Add styles for the welcome message */
+  .profile-info p:first-of-type {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  

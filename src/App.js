@@ -6,7 +6,7 @@ import NoteManager from './Components/NoteManager/NoteManager';
 import Calendar from './Components/Calendar/Calendar';
 import Images from './Components/ImagesApp/index';
 import Videos from './Components/VideosApp/index';
-import Name from './Components/Profile/index.js'
+import Profile from './Components/Profile/index.js'
 import './App.css';
 import Layout from './Components/Layout/Layout';
 import ProtectedRoute from './LoginStore/ProtectedRoute.js';
@@ -40,7 +40,7 @@ function App() {
             </ProtectedRoute>} />
             <Route path="/profile" element={
             <ProtectedRoute>
-              <Layout><Name/></Layout>
+              <Layout><Profile/></Layout>
             </ProtectedRoute>} />
         </Routes>
       </div>

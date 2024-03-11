@@ -90,7 +90,7 @@ const CustomVideoEditor = () => {
         onChange={onChange}
         modifier={videoPlugin.addVideo}
       />
-      <button onClick={saveVideos}>Save Videos Contents</button>
+      <button onClick={saveVideos}>Save Video Contents</button>
     </div>
   );
 };
