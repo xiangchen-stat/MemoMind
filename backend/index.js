@@ -45,7 +45,7 @@ app.post('/api/login', async (req, res) => {
   try {
     const user = await database.collection('Users').findOne({ email: email });
     if (user) {
-      if (user.password === password) {
+      if (await bcrypt.compare(password, user.password)) {
         req.session.userEmail = user.email;
         res.status(200).json({ message: "Login successful", user: { name: user.name, email: user.email }});//, token }); 
 
@@ -62,8 +62,12 @@ app.post('/api/login', async (req, res) => {
 });
 
 // Put the signup data into the database.
+const bcrypt = require('bcrypt');
+const saltRounds = 10; // The cost factor controls how much time is needed to calculate a single bcrypt hash. The higher the cost factor, the more hashing rounds are done. Increasing the cost factor by 1 doubles the necessary time. The actual value should be determined based on the environment.
+
+// Put the signup data into the database.
 app.post('/api/signup', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password } = req.body; // Change `hashedPassword` to `password`
 
   try {
     const existingUser = await database.collection('Users').findOne({ email: email });
@@ -71,13 +75,12 @@ app.post('/api/signup', async (req, res) => {
       return res.status(400).json({ message: "User with this email already exists" });
     }
 
-    // Maybe hash the password before storing it?
-    const result = await database.collection('Users').insertOne({ name, email, password });
+    // Hash the password before storing it
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const result = await database.collection('Users').insertOne({ name, email, password: hashedPassword }); // Store the hashed password
 
     if (result.acknowledged) {
-      const savedUser = await database.collection('Users').findOne({ email: email });
-      res.status(201).json({ name: savedUser.name, email: savedUser.email }); 
-      
+      res.status(201).json({ message: 'User created successfully', user: { name, email }}); 
     } else {
       res.status(400).json({ message: 'Failed to add user' });
     }
@@ -86,6 +89,7 @@ app.post('/api/signup', async (req, res) => {
     res.status(500).json({ error: 'Failed to add user' });
   }
 });
+
 
 // Images page --------------------------------------------------------
 

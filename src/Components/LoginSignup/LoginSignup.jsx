@@ -126,6 +126,11 @@ const LoginSignup = () => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.getModifierState('CapsLock')) {
+                alert('Caps Lock is on'); // Display a more subtle message or visual cue in your application
+              }
+            }}
           />
         </div>
       </div>
