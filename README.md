@@ -49,7 +49,6 @@ or download the zip on GitHub.
 
 3.  Install npm
 `$ npm install`
-`$ npm install concurrently`
 
 4. Start the app!
 `$ npm run dev`
@@ -59,14 +58,11 @@ Create an account and have fun, the content will be saved for your account.
 
 
 ## Commands
-<!-- possibly include node-js problem > -->
 `$ git clone https://github.com/xiangchen-stat/MemoMind`
 
 `$ cd MemoMind`
 
 `$ npm install`
-
-`$ npm install concurrently`
 
 If run into issue with `Error: Can't resolve 'draft-js-plugins/editor'` try: `$ npm install @draft-js-plugins/editor`
 
