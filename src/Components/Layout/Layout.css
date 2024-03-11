@@ -1,4 +1,11 @@
 /* Updated CSS with container styles */
+.nav-container {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+    height: 100vh; 
+}
+
 .nav-link-container {
     text-align: left;
     display: block; /* Makes each link take up its own line */
@@ -18,7 +25,6 @@
     background-color: transparent; /* Ensures the button background is transparent */
     border: none; /* Removes button border */
     cursor: pointer; /* Ensures the cursor changes to a pointer to indicate clickability */
-    width: 100%; /* Ensures the button expands to fill its container */
 }
 
 .logout-button {
@@ -27,9 +33,51 @@
     cursor: pointer; /* Changes cursor to pointer to indicate clickability */
     width: 100%; /* Ensures the button expands to fill its container */
     font-size: 15px; /* Increases font size */
+    color: red;
 }
 
 .active {
     color: blue; /* Active link color */
     font-weight: bold; /* Makes active link bold */
+}
+
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    padding: var(--sidebar-padding);
+    position: fixed;
+    left: 20px;
+    top: 20px;
+    bottom: 20px;
+    width: var(--sidebar-width);
+    background-color: #f0f0f0;
+}
+
+.sidebar-footer {
+    margin-top: auto; 
+    text-align: center; 
+    padding: 20px; 
+}
+
+.sidebar-footer .logout-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    font-size: 15px;
+    color: red;
+    padding: 10px 0; 
+}
+
+.sidebar a {
+    display: block;
+    padding: 10px;
+    margin: 5px 0;
+    text-decoration: none;
+    color: #333;
+}
+.sidebar a:hover {
+    background-color: #ddd; 
 }

@@ -8,6 +8,7 @@ const NotesApp = () => {
   const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [privacy, setNotesPrivacy] = useState("public");
   const [selectedNote, setSelectedNote] = useState(null);
   const [labels, setLabels] = useState([]); // All available labels
   const [selectedLabels, setSelectedLabels] = useState([]); // Labels for the current note
@@ -16,7 +17,6 @@ const NotesApp = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [labelSearchQuery, setLabelSearchQuery] = useState('');
   const [filterMode, setFilterMode] = useState('content');
-
 
 useEffect(() => {
   const fetchNotes = async () => {
@@ -81,6 +81,7 @@ useEffect(() => {
       NoteName: title,
       Contents: content,
       Labels: selectedLabels,
+      NotePrivacy: privacy,
     };
     try { /* add labels to backend later ?*/
       const response = await fetch(`http://localhost:3001/Notes?userEmail=${userEmail}`, {
