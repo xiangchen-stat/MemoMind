@@ -70,8 +70,8 @@ function NoteManager() {
                 onChange={(e) => handleNotePrivacyChange(e, index)}
                 className="note-privacy-select"
               >
-                <option value="Private">Private</option>
                 <option value="Public">Public</option>
+                <option value="Private">Private</option>
               </select>
             </li>
           ))}
