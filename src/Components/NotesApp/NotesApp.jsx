@@ -8,7 +8,7 @@ const NotesApp = () => {
   const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [privacy, setNotesPrivacy] = useState("public");
+  const [privacy, setNotesPrivacy] = useState("Public");
   const [selectedNote, setSelectedNote] = useState(null);
   const [labels, setLabels] = useState([]); // All available labels
   const [selectedLabels, setSelectedLabels] = useState([]); // Labels for the current note
