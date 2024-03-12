@@ -2,6 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './FriendManager.css'
 
+/** 
+ * Manages and displays friend relationships for the user.
+ * It allows the user to send friend requests, accept incoming requests, view current friends,
+ * and remove friends or friend requests. It does this by fetching friend data from the server and updates
+ * the UI accordingly.
+ * 
+ * @author Jermaine Xie
+ */
 function FriendManager() {
   const [searchEmail, setSearchEmail] = useState('');
   const [searchMessage, setSearchMessage] = useState('');
@@ -30,7 +38,7 @@ function FriendManager() {
     }
   };
 
-  // Function to fetch current friends.
+  //  Function to fetch current friends.
   const fetchFriends = async () => {
     try {
       const response = await fetch(`http://localhost:3001/FriendManager/friends?userEmail=${userEmail}`);
@@ -126,7 +134,7 @@ function FriendManager() {
       }
     };
 
-  // Function to remove incoming or outgoing requests.
+  // Function to remove incoming or outgoing requests. 
   const removeRequest = async (otherUserEmail, type) => {
     try {
       const response = await fetch (`http://localhost:3001/FriendManager/manageRequest`, {
@@ -149,6 +157,7 @@ function FriendManager() {
   return (
     <div className="FriendManager">
       <div className="AddFriends">
+        {/* SearchBar to add friends */}
         <h2>Add Friends</h2>
         <form onSubmit={handleSearchSubmit}>
           <input
