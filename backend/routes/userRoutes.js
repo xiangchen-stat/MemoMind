@@ -4,6 +4,9 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+/**
+ * Sending signup information from Front-End to MongoDB database
+ */
 router.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -30,6 +33,9 @@ router.post('/signup', async (req, res) => {
   }
 });
 
+/**
+ * Sending login information from Front-End to MongoDB database
+ */
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
