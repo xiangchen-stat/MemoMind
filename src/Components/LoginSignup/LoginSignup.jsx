@@ -11,16 +11,24 @@ import logo from "../Assets/memomind.png";
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess, logoutSuccess } from '../../LoginStore/authSlice';
 
+/**
+ * Povides a user interface for authentication. It allows users to switch between
+ * login and signup forms and handle the respective authentication processes. 
+ * 
+ * @author Sharon Chen
+ * @author Albert Le
+ * @author Jermaine Xie
+ */
 const LoginSignup = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Use useNavigate hook here
+  const navigate = useNavigate(); 
 
   const [action, setAction] = useState("Sign Up");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMsg, setErrorMsg] = useState(""); // Added state for error message
-  const [successMsg, setSuccessMsg] = useState(""); // Added state for error message
+  const [errorMsg, setErrorMsg] = useState(""); 
+  const [successMsg, setSuccessMsg] = useState(""); 
 
   useEffect(() => {
     document.body.classList.add('login-body');
@@ -31,12 +39,12 @@ const LoginSignup = () => {
 
   // Function that handles signup.
   const handleSignUp = async () => {
-    setErrorMsg(""); // Clear error message
-    setSuccessMsg(""); // Clear error message
+    setErrorMsg(""); 
+    setSuccessMsg(""); 
 
     console.log("Sending signup data:", { name, email, password });
     if (!name || !email || !password) {
-      setErrorMsg("Please fill in all fields for sign up."); // Set error message
+      setErrorMsg("Please fill in all fields for sign up."); 
       return;
     }
     try {
@@ -49,21 +57,22 @@ const LoginSignup = () => {
 
       if (response.ok) {
         setSuccessMsg("Signup successful!");
-        navigate('/Notes'); // Navigate on success
+        navigate('/Notes'); 
       } else {
-        setErrorMsg(data.msg || "Signup failed"); // Set error message
+        setErrorMsg(data.msg || "Signup failed"); 
       }
     } catch (error) {
       console.error("Signup error:", error);
-      setErrorMsg("Signup error"); // Set error message
+      setErrorMsg("Signup error"); 
       console.log("Signup error:");
     }
   };
 
+  
   // Function that handles login.
   const handleLogin = async () => {
     if (!email || !password) {
-      setErrorMsg("Please fill in all fields for login."); // Set error message
+      setErrorMsg("Please fill in all fields for login."); 
       return;
     }
 
@@ -75,19 +84,18 @@ const LoginSignup = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        // Store user data & token in local storage.
         localStorage.setItem('userData', JSON.stringify(data)); 
         localStorage.setItem('userEmail', data.user.email);
         dispatch(loginSuccess(data))
         setSuccessMsg("Login successful!");
-        // Navigate to main page on success.
+
         navigate('/Notes'); 
       } else {
-        setErrorMsg(data.msg || "Login failed"); // Set error message
+        setErrorMsg(data.msg || "Login failed"); 
       }
     } catch (error) {
       console.error("Login error:", error);
-      setErrorMsg("Login error"); // Set error message
+      setErrorMsg("Login error"); 
       console.log("Login error:");
     }
   };
@@ -128,7 +136,7 @@ const LoginSignup = () => {
             onChange={(e) => setPassword(e.target.value)}
             onKeyUp={(e) => {
               if (e.getModifierState('CapsLock')) {
-                alert('Caps Lock is on'); // Display a more subtle message or visual cue in your application
+                alert('Caps Lock is on'); 
               }
             }}
           />
