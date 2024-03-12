@@ -6,6 +6,26 @@ import './Layout.css';
 import { useDispatch } from 'react-redux';
 import { logoutSuccess } from '../../LoginStore/authSlice';
 
+/**
+ * Layout component that provides the basic structure of the application interface.
+ * Includes a sidebar for navigation and a content area where child components are rendered.
+ * The sidebar contains links to different sections of the application, such as Notes, Calendar, Images, Videos, Profile, Privacy Manager, and Friend Manager.
+ * It also displays the current user's name and provides a logout button.
+ * 
+ * @component
+ * @param {Object} props The props passed to the component.
+ * @param {React.ReactNode} props.children The child components to be rendered in the content area.
+ * 
+ * @example
+ * <Layout>
+ *   <ChildComponent />
+ * </Layout>
+ * 
+ * @author Sharon C. @sharonc05
+ * @author Jermaine J. @JJjermaine
+ * @author Cindy D. @cindydingg
+ */
+
 const Layout = ({ children }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
