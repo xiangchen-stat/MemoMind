@@ -4,15 +4,39 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
+
+/**
+ * A React component for displaying and managing events in a calendar.
+ * Utilizes FullCalendar for rendering events in various views (day, week, month).
+ * Allows users to add, remove, and view events.
+ * 
+ * @component
+ * @author @sharonc05 - Main contributor
+ * @example
+ * return (
+ *   <Calendar />
+ * )
+ */
 function Calendar() {
+  // States to manage events and form input
   const [events, setEvents] = useState([]);
   const [eventTitle, setEventTitle] = useState('');
   const [eventDate, setEventDate] = useState('');
+  // Retrieve user email from local storage
   const userEmail = localStorage.getItem('userEmail');
 
+  /**
+   * Fetches events from the server and updates the events state.
+   * Called initially on component mount and whenever the user's events need to be refreshed.
+   */
   useEffect(() => {
     fetchEvents();
   }, []);
+
+  /**
+   * Asynchronously fetches events from the API and sets the events state.
+   * Handles server response and errors gracefully.
+   */
 
   const fetchEvents = async () => {
     try {
@@ -34,13 +58,16 @@ function Calendar() {
     }
   };
 
+  /**
+   * Handles the addition of a new event.
+   * Collects input from the state, sends a POST request to the server, and updates the events state.
+   */
   const handleAddEvent = async () => {
     const newEvent = {
       title: eventTitle,
       start: eventDate,
       userEmail,
     };
-  
     try {
       const response = await fetch(`http://localhost:3001/api/events?userEmail=${userEmail}`, {
         method: 'POST',
@@ -70,6 +97,12 @@ function Calendar() {
     }
   };
 
+  /**
+   * Handles the removal of an event.
+   * Sends a DELETE request for the specified event and refreshes the events list.
+   * 
+   * @param {Object} event - The event object to be removed.
+   */
   const handleEventRemove = async (event) => {
     try {
       const response = await fetch(`http://localhost:3001/api/events/${event.id}?userEmail=${userEmail}`, {
@@ -88,6 +121,13 @@ function Calendar() {
   };
   
 
+  /**
+   * Renders the content of an event, including a custom delete button.
+   * 
+   * @param {Object} eventInfo - The information about the event to render.
+   * @returns {JSX.Element} The rendered event content.
+   */
+
   const renderEventContent = (eventInfo) => {
     return (
       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -101,7 +141,7 @@ function Calendar() {
     );
   };
     
-  
+  // Main component render method
   return (
     <div>
       <input type="text" placeholder="Event Title" value={eventTitle} onChange={(e) => setEventTitle(e.target.value)} />
