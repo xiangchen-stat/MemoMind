@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+/**  
+ * Displays all public notes shared by a friend. It uses the friend's email address obtained from
+ * the URL parameters to fetch the notes from the backend. The notes are then displayed.
+ * 
+ * @author Jermaine Xie
+*/
 const FriendNotes = () => {
   const { friendEmail } = useParams();
   const [ notes, setNotes ] = useState([]);
