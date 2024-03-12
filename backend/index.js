@@ -7,7 +7,7 @@ const session = require('express-session');
 app.use(express.json());
 app.use(cors());
 
-// Database connection -----------------------------------
+// Database connection ----------------------------------------------------
 
 var Mongoclient = require("mongodb").MongoClient;
 require('dotenv').config();
@@ -30,15 +30,26 @@ Mongoclient.connect(CONNECTION_STRING).then(client => {
 
 // login signup page --------------------------------------------------------
 
-// Configure session middleware
+/** 
+ * Configure session middleware 
+ * @author Jermaine Xie
+ */ 
 app.use(session({
-  secret: 'your_secret_key', // Random key for signing the session ID cookie
+  secret: 'random_secret_key',
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false }
 }));
 
-// Compare the provided password with the one stored in the database.
+/** 
+ * Compares the provided password with the one stored in the database.
+ * If successful, initiates a session for the user.
+ * @param {Request} req - Express request object containing the login credentials.
+ * @param {Response} res - Express response object used for sending back the login status.
+ * 
+ * @author Jermaine Xie
+ * @author Albert Le
+*/
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -65,7 +76,14 @@ app.post('/api/login', async (req, res) => {
 const bcrypt = require('bcrypt');
 const saltRounds = 10; 
 
-// Put the signup data into the database.
+/** 
+ * Puts the signup data into the database.
+ * @param {Request} req - Contains the registration details.
+ * @param {Response} res - Sends back the registration status.
+ * 
+ * @author Jermaine Xie
+ * @author Albert Le
+*/
 app.post('/api/signup', async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -88,7 +106,8 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-// Profile page -----------------------------------------
+// Profile page -------------------------------------------------------
+
 app.get('/api/profile', async (req, res) => {
   const userEmail = req.query.userEmail;
   try {
@@ -126,7 +145,9 @@ app.post('/api/profile', async (req, res) => {
     res.status(500).json({ error: 'Failed to add/update profile' });
   }
 });
-// Videos page -----------------------------------------
+
+// Videos page -------------------------------------------------------
+
 // Endpoint to fetch videos for a user
 app.get('/api/videos', async (req, res) => {
   const userEmail = req.query.userEmail;
@@ -169,7 +190,8 @@ app.post('/api/videos', async (req, res) => {
   }
 });
 
-// Images page -----------------------------------------
+// Images page ---------------------------------------------------------------
+
 // Endpoint to fetch images for a user
 app.get('/api/images', async (req, res) => {
   const userEmail = req.query.userEmail;
@@ -234,7 +256,8 @@ app.post('/api/images', async (req, res) => {
 //   }
 // });
 
-// Calendar page -----------------------------------------
+// Calendar page -----------------------------------------------------------
+
 app.post('/api/events', async (req, res) => {
   const { title, start, userEmail } = req.body;
 
@@ -293,7 +316,13 @@ app.delete('/api/events/:id', async (req, res) => {
 
 // main page -------------------------------------------------------------------
 
-// Gets data from notes main page.
+/**  
+ * Gets notes data for main page.
+ * @param {Request} req - Contains the user's email query parameter.
+ * @param {Response} res - Sends back the fetched notes data or an error message.
+ * 
+ * @author Jermaine Xie
+*/
 app.get("/Notes", async (req, res) => {
   const userEmail = req.query.userEmail;
   try {
@@ -306,7 +335,13 @@ app.get("/Notes", async (req, res) => {
   }
 })
 
-// Allows you to insert notes to the database.
+/** 
+ * Allows you to insert notes to the database.
+ * @param {Request} req - Contains the note details.
+ * @param {Response} res - Sends back the status of the note insertion or an error message.
+ * 
+ * @author Jermaine Xie
+*/
 app.post('/Notes', async (req, res) => {
   const { NoteName, Contents, userEmail, Labels, NotePrivacy } = req.body; 
 
@@ -332,7 +367,13 @@ app.post('/Notes', async (req, res) => {
   }
 });
 
-// Allows you to update the notes in the database. 
+/** 
+ * Allows you to update the notes in the database. 
+ * @param {Request} req - Contains the new note details and the note ID in the URL parameters.
+ * @param {Response} res - Sends back the updated note data or an error message.
+ * 
+ * @author Jermaine Xie
+*/
 app.put('/Notes/:id', async (req, res) => {
   const noteId = req.params.id;
   const { NoteName, Contents, Labels } = req.body;
@@ -361,7 +402,13 @@ app.put('/Notes/:id', async (req, res) => {
   }
 });
 
-// Allows you to delete notes from the database.
+/**  
+ * Allows you to delete notes from the database.
+ * @param {Request} req - Contains the note ID in the URL parameters and the user's email in the query parameters.
+ * @param {Response} res - Sends back the deletion status or an error message.
+ * 
+ * @author Jermaine Xie
+*/
 app.delete('/Notes/:id', async (req, res) => {
   const noteId = req.params.id;
   const userEmail = req.query.userEmail;
@@ -385,7 +432,14 @@ app.delete('/Notes/:id', async (req, res) => {
 
 // Privacy manager page --------------------------------------------
 
-// Gets data for the Privacy manager page.
+/**  
+ * Gets data notes data.
+ * Notes are either "public" or "private".
+ * @param {Request} req - Contains the user's email query parameter.
+ * @param {Response} res - Sends back the fetched notes data or an error message.
+ * 
+ * @author Jermaine Xie
+*/
 app.get("/PrivacyManager", async (req, res) => {
   const userEmail = req.query.userEmail;
   try {
@@ -398,7 +452,14 @@ app.get("/PrivacyManager", async (req, res) => {
   }
 });
 
-// Puts data in the manage-notes page.
+/**  
+ * Updates privacy of notes.
+ * Sets the notes to be either "public" or "private"
+ * @param {Request} req - Contains the new privacy setting and the note ID in the URL parameters.
+ * @param {Response} res - Sends back the update status or an error message.
+ * 
+ * @author Jermaine Xie
+*/
 app.put('/PrivacyManager/:id', async (req, res) => {
   const noteId = req.params.id;
   const { NotePrivacy } = req.body;
@@ -422,7 +483,14 @@ app.put('/PrivacyManager/:id', async (req, res) => {
 
 // Friend manager page --------------------------------------------
 
-// Send friend request.
+/**  
+ * Sends a friend request.
+ * Creates a relationship between user and receiver as "pending".
+ * @param {Request} req - Contains sender and receiver email addresses.
+ * @param {Response} res - Sends back the operation status.
+ * 
+ * @author Jermaine Xie
+*/
 app.post('/FriendManager/sendRequest', async (req, res) => {
   const { senderEmail, receiverEmail } = req.body;
 
@@ -462,7 +530,7 @@ app.post('/FriendManager/sendRequest', async (req, res) => {
       return res.status(409).json({ message: "Friend request already sent" });
     }
 
-    // Edge case: prevents sending request if already in friends list
+    // Edge case: Prevents sending request if already in friends list.
     const isAlreadyFriends = await database.collection("Requests").findOne({
       $or: [
         { senderEmail: senderEmail, receiverEmail: receiverEmail, status: 'accepted' },
@@ -489,7 +557,14 @@ app.post('/FriendManager/sendRequest', async (req, res) => {
 });
 
 
-// If the status between friend request is "accepted", then display them as friends.
+/**  
+ * Display the users current friends. 
+ * If the status between a friend request is "accepted", then display them as friends.
+ * @param {Request} req - Contains the user's email in query parameters to identify the user.
+ * @param {Response} res - Sends back the list of friends or an error message.
+ * 
+ * @author Jermaine Xie
+*/
 app.get("/FriendManager/friends", async (req, res) => {
   const userEmail = req.query.userEmail;
 
@@ -507,7 +582,14 @@ app.get("/FriendManager/friends", async (req, res) => {
   }
 });
 
-// Gets the user's incoming/outgoing requests
+/**  
+ * Gets the user's incoming or outgoing requests. 
+ * If the status between a friend request is "pending", then display them as an incoming or outgoing request.
+ * @param {Request} req - Contains the user's email in query parameters to identify the user.
+ * @param {Response} res - Sends back lists of incoming and outgoing requests or an error message.
+ * 
+ * @author Jermaine Xie
+*/
 app.get("/FriendManager", async (req, res) => {
   const userEmail = req.query.userEmail;
 
@@ -521,7 +603,13 @@ app.get("/FriendManager", async (req, res) => {
   }
 });
 
-// Marks the request as accepted.
+/**  
+ * Marks the request as accepted.
+ * @param {Request} req - Contains the ID of the friend request and the emails of the sender and receiver.
+ * @param {Response} res - Sends back confirmation of acceptance or an error message.
+ * 
+ * @author Jermaine Xie
+*/
 app.post('/FriendManager/acceptRequest', async (req, res) => {
   const { requestId, senderEmail, receiverEmail } = req.body;
 
@@ -542,7 +630,13 @@ app.post('/FriendManager/acceptRequest', async (req, res) => {
 });
 
 
-// Remove a friend from current friends list.
+/**  
+ * Removes a friend from the users current list of friends.
+ * @param {Request} req - Contains the emails of the user and the friend to be removed.
+ * @param {Response} res - Confirms the removal or reporting an error.
+ * 
+ * @author Jermaine Xie
+*/
 app.post('/FriendManager/removeFriend', async (req, res) => {
   const { userEmail, friendEmail } = req.body;
 
@@ -560,7 +654,13 @@ app.post('/FriendManager/removeFriend', async (req, res) => {
   }
 });
 
-// Cancel incoming/outcoming friend request.
+/** 
+ * Cancels an incoming or outgoing friend request.
+ * @param {Request} req - Contains the emails of the user initiating the cancelation and the other user involved in the request.
+ * @param {Response} res - Confirmsthe request removal or reports an error.
+ * 
+ * @author Jermaine Xie
+*/
 app.post('/FriendManager/manageRequest', async (req, res) => {
   const { userEmail, otherUserEmail } = req.body; 
 
@@ -581,7 +681,14 @@ app.post('/FriendManager/manageRequest', async (req, res) => {
 
 // Friends Notes Page ---------------------------------------------------------
 
-// Get friends public notes.
+/** 
+ * Retrieves and returns the public notes of a user's friend. 
+ * Given they are indeed friends and the notes are public.
+ * @param {Request} req - Contains the userEmail and friendEmail in query parameters to identify the user and the friend.
+ * @param {Response} res - Sendings back the friend's public notes or an error message.
+ * 
+ * @author Jermaine Xie
+*/
 app.get('/FriendNotes', async (req, res) => {
   const { userEmail, friendEmail } = req.query; 
 
