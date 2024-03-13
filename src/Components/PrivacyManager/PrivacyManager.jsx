@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './PrivacyManager.css'
 
-function NoteManager() {
+/**
+ * This page allows users to manage the privacy settings of their notes.
+ * It fetches all the user's notes from the backend and provides an interface to update each note's privacy setting simultaneously.
+ * 
+ * @author Jermaine Xie 
+ */
+function PrivacyManager() {
   const [notes, setNotes] = useState([]); 
   const userEmail = localStorage.getItem('userEmail');
 
-  // Gets the data from the database.
+  /**
+   * Fetches the user's notes from the backend and updates the notes state.
+   */
   useEffect(() => {
     const fetchNotes = async () => {
       try {
@@ -22,14 +30,21 @@ function NoteManager() {
     fetchNotes();
   }, []);
 
+  /**
+   * Handles changes to a note's privacy setting by updating the notes in the notes state.
+   * @param {Event} event - The change event from the privacy select input.
+   * @param {number} index - The index of the note in the notes array whose privacy is being changed.
+   */
   const handleNotePrivacyChange = (event, index) => {
     const updatedNotes = [...notes];
     updatedNotes[index].NotePrivacy = event.target.value;
     setNotes(updatedNotes);
   };
 
+  /**
+   * Updates the privacy setting of all notes in the backend based on their current states.
+   */
   const updateAllPrivacy = async () => {
-    // Iterate over the `notes` array and send update requests for each note's privacy.
     const updatePromises = notes.map((note) =>
       fetch(`http://localhost:3001/PrivacyManager/${note._id}`, {
         method: 'PUT',
@@ -70,8 +85,8 @@ function NoteManager() {
                 onChange={(e) => handleNotePrivacyChange(e, index)}
                 className="note-privacy-select"
               >
-                <option value="Private">Private</option>
                 <option value="Public">Public</option>
+                <option value="Private">Private</option>
               </select>
             </li>
           ))}
@@ -81,4 +96,4 @@ function NoteManager() {
   );
 }
 
-export default NoteManager;
+export default PrivacyManager;
