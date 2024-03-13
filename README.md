@@ -88,7 +88,7 @@ If run into issue with `Error: Can't resolve 'draft-js-plugins/editor'` try: `$ 
 
 ## Contributors
 * Sharon Chen (sharonc05): contributed to login/signup, calendar, calendar events, labels, navigation bar
-* Jermaine Xie (JJjermaine): contributed to login/signup, notes page, MongoDB setup, friend management, privacy notes
+* Jermaine Xie (JJjermaine): contributed to login/signup, notes page, MongoDB setup, friend management, notes privacy 
 * Cindy Ding (cindydingg): contributed to image upload, video upload, notes page
 * Albert Le (albert97567): contributed to login/signup page, MongoDB setup, password encryption, notes searchbar, labels searchbar
 
