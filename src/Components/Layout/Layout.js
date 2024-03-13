@@ -22,7 +22,7 @@ import { logoutSuccess } from '../../LoginStore/authSlice';
  * </Layout>
  * 
  * @author Sharon C. @sharonc05
- * @author Jermaine J. @JJjermaine
+ * @author Jermaine X. @JJjermaine
  * @author Cindy D. @cindydingg
  */
 
