@@ -1,3 +1,10 @@
+/**
+ * Express router for handling user authentication and registration.
+ * Signup and login with bcrypt for password hashing
+ * 
+ * @author Albert Le
+ */
+
 const express = require('express');
 const User = require('../models/User');
 const router = express.Router();
@@ -5,8 +12,13 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 /**
- * Sending signup information from Front-End to MongoDB database
+ * Handles new user registration.
+ * 
+ * Accepts a POST request with user's name, email, and password, checks if a user with the same email
+ * already exists, hashes the password using bcrypt, and creates a new user in the database.
+ * 
  */
+
 router.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -34,8 +46,13 @@ router.post('/signup', async (req, res) => {
 });
 
 /**
- * Sending login information from Front-End to MongoDB database
+ * Handles user login.
+ * 
+ * Accepts a POST request with user's name, email, and password, finds the user by email, compares the
+ * submitted password with the hashed password stored in the database, then either displays a confirmation or an error.
+ * 
  */
+
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
