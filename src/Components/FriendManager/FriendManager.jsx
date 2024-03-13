@@ -23,7 +23,10 @@ function FriendManager() {
     fetchFriends();
   }, []);
 
-  // Function to fetch current requests.
+  /**  
+   * Function to fetch current requests.
+   * Updates the friend request state with the fetched data.
+  */
   const fetchRequests = async () => {
     try {
     const response = await fetch(`http://localhost:3001/FriendManager?userEmail=${userEmail}`);
@@ -38,7 +41,9 @@ function FriendManager() {
     }
   };
 
-  //  Function to fetch current friends.
+  /**  
+   * Function to fetch current friends and updates the current friends state.
+   */
   const fetchFriends = async () => {
     try {
       const response = await fetch(`http://localhost:3001/FriendManager/friends?userEmail=${userEmail}`);
@@ -57,7 +62,11 @@ function FriendManager() {
     }
   };
 
-  // Function to search and add other users email.
+  /**  
+   * Function to search and add other users email.
+   * Sends a friend request to typed in email address and updates the UI.
+   * @param {Event} e - The event object from the form submission.
+  */
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -85,7 +94,10 @@ function FriendManager() {
     }
   };
 
-  // Function to accept a friend request.
+  /**  
+   * Function to accept a friend request and updates the UI.
+   * @param {Object} request - The friend request object to be accepted.
+  */
   const acceptFriendRequest = async (request) => {
     try {
       const response = await fetch(`http://localhost:3001/FriendManager/acceptRequest`, {
@@ -117,7 +129,10 @@ function FriendManager() {
     }
   };
 
-  // Function to remove current friend.
+  /**  
+   * Function to remove a current friend and updates the UI.
+   * @param {string} friendEmail - The email address of the friend to be removed.
+  */
   const removeFriend = async (friendEmail) => {
       try {
         const response = await fetch(`http://localhost:3001/FriendManager/removeFriend`, {
@@ -134,7 +149,11 @@ function FriendManager() {
       }
     };
 
-  // Function to remove incoming or outgoing requests. 
+  /**  
+   * Function to remove incoming or outgoing requests and updates the UI accordingly. 
+   * @param {string} otherUserEmail - The email address of the other user involved in the request.
+   * @param {string} type - The type of the request, either 'incoming' or 'outgoing'.
+  */
   const removeRequest = async (otherUserEmail, type) => {
     try {
       const response = await fetch (`http://localhost:3001/FriendManager/manageRequest`, {
