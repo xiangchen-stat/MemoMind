@@ -3,22 +3,33 @@ import { useState, useEffect } from 'react';
 import './NotesApp.css'; 
 import { NavLink } from 'react-router-dom'; // Import Link at the top
 
+/**
+ * This page provides an interface for creating, displaying, updating, and deleting notes.
+ * It supports note privacy settings, labeling, and searching by note content or labels.
+ * 
+ * @author Jermaine Xie
+ * @author Cindy Ding
+ * @author Albert Le
+ */
 const NotesApp = () => {
   // State declarations
   const [notes, setNotes] = useState([]);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [privacy, setNotesPrivacy] = useState("public");
+  const [privacy, setNotesPrivacy] = useState("Public");
   const [selectedNote, setSelectedNote] = useState(null);
-  const [labels, setLabels] = useState([]); // All available labels
-  const [selectedLabels, setSelectedLabels] = useState([]); // Labels for the current note
-  const [newLabel, setNewLabel] = useState(''); // State for managing new label input
+  const [labels, setLabels] = useState([]);
+  const [selectedLabels, setSelectedLabels] = useState([]);
+  const [newLabel, setNewLabel] = useState('');
   const userEmail = localStorage.getItem('userEmail');
   const [searchQuery, setSearchQuery] = useState('');
   const [labelSearchQuery, setLabelSearchQuery] = useState('');
   const [filterMode, setFilterMode] = useState('content');
 
 useEffect(() => {
+  /**  
+   * Function to fetch notes for the user from the backend and updates the states.
+  */
   const fetchNotes = async () => {
     try {
       const response = await fetch(`http://localhost:3001/Notes?userEmail=${userEmail}`);
@@ -39,14 +50,21 @@ useEffect(() => {
   fetchNotes();
 }, []);
 
-  
+  /**  
+   * Function to create labels and adds it to the list of available ones.
+  */
   const handleCreateLabel = () => {
     if (newLabel && !labels.includes(newLabel)) {
       setLabels([...labels, newLabel]);
-      setNewLabel(''); // Clear input field after adding
+      setNewLabel(''); 
     }
   };
 
+  /**  
+   * Function to toggle selection of a label.
+   * @param {Event} e - The change event from the checkbox input.
+   * @param {string} label - The label being toggled.
+  */
   const handleLabelCheckChange = (e, label) => {
     if (e.target.checked) {
       setSelectedLabels([...selectedLabels, label]);
@@ -54,11 +72,20 @@ useEffect(() => {
       setSelectedLabels(selectedLabels.filter((l) => l !== label));
     }
   };  
+
+  /**  
+   * Function remove labels from the selected labels.
+   * @param {string} labelToRemove - The label to remove from the selected labels.
+  */
   const handleRemoveLabel = (labelToRemove) => {
     setSelectedLabels(selectedLabels.filter(label => label !== labelToRemove));
   };
   
-  // Function to click notes.
+  /**
+   * Function to handle the selection of a note for viewing or editing. 
+   * Sets the selected note state and populates textbox.
+   * @param {Object} note - The note object being selected.
+   */
   const handleNoteClick = (note) => {
   if (selectedNote && selectedNote._id === note._id) {
     setSelectedNote(null);
@@ -73,7 +100,11 @@ useEffect(() => {
   }
   }
   
-  // Function to add notes.
+  /**
+   * Function to handle create new notes. 
+   * Creates the note object from state and sends it to the backend.
+   * @param {Event} event - The form submission event.
+   */
   const handleAddNote = async (event) => {
     event.preventDefault();
     const newNote = {
@@ -83,7 +114,7 @@ useEffect(() => {
       Labels: selectedLabels,
       NotePrivacy: privacy,
     };
-    try { /* add labels to backend later ?*/
+    try {
       const response = await fetch(`http://localhost:3001/Notes?userEmail=${userEmail}`, {
         method: 'POST',
         headers: {
@@ -107,7 +138,11 @@ useEffect(() => {
     }
   };
 
-  // Function to update the notes.
+  /**
+   * Function to update existing notes.
+   * Creates the updated note object from state and sends it to the backend.
+   * @param {Event} event - The form submission event.
+   */
   const handleUpdateNote = async (event) => {
     event.preventDefault();
     if (!selectedNote) {
@@ -143,14 +178,20 @@ useEffect(() => {
     }
   };
 
-  // Function to cancel editing a note.
+  /**
+   * Function to cancel editing a note.
+   */
   const handleCancel = () => {
     setTitle("")
     setContent("")
     setSelectedNote(null);
   }
 
-  // Function to delete a note.
+  /**
+   * Function to delete a note by its ID and updates the notes list state.
+   * @param {Event} event - The click event to stop propagation.
+   * @param {string} noteId - The ID of the note to delete.
+   */
   const deleteNote = async (event, noteId) => {
     event.stopPropagation();
     try {
@@ -172,9 +213,6 @@ useEffect(() => {
     return matchesContent && matchesLabel;
   });
 
-  
-  
-  
   return (
     <div className="app-container">
       <div className="notes-section">
@@ -185,14 +223,14 @@ useEffect(() => {
           placeholder="Search notes by content..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          style={{ flex: 1, marginRight: '10px' }} // Adjust flex and margin as needed
+          style={{ flex: 1, marginRight: '10px' }}
         />
         <input
           type="text"
           placeholder="Search notes by label..."
           value={labelSearchQuery}
           onChange={(e) => setLabelSearchQuery(e.target.value)}
-          style={{ flex: 1 }} // Adjust flex as needed
+          style={{ flex: 1 }}
         />
       </div>
 
